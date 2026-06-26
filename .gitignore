@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Turbo
+.turbo
+
+# Build outputs
+dist
+.next
+out
+build
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.local.example
+
+# Prisma
+*.db
+*.db-journal
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.swp
+*.swo

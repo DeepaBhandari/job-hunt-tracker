@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  name         String?
+  googleId     String?  @unique @map("google_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  companies      Company[]
+  jobs           Job[]
+  applications   Application[]
+  contacts       Contact[]
+  resumeVersions ResumeVersion[]
+  tags           Tag[]
+
+  @@map("users")
+}
+
+model Company {
+  id       String  @id @default(cuid())
+  userId   String  @map("user_id")
+  name     String
+  website  String?
+  industry String?
+  size     String?
+  notes    String?
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs     Job[]
+  contacts Contact[]
+
+  @@map("companies")
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  companyId   String   @map("company_id")
+  userId      String   @map("user_id")
+  title       String
+  description String?
+  url         String?
+  salaryMin   Int?     @map("salary_min")
+  salaryMax   Int?     @map("salary_max")
+  location    String?
+  type        JobType?
+  source      String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@map("jobs")
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  REMOTE
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  jobId           String            @map("job_id")
+  userId          String            @map("user_id")
+  status          ApplicationStatus @default(SAVED)
+  appliedAt       DateTime?         @map("applied_at")
+  resumeVersionId String?           @map("resume_version_id")
+  coverLetter     String?           @map("cover_letter")
+  notes           String?
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  job           Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeVersion ResumeVersion?  @relation(fields: [resumeVersionId], references: [id])
+  interviews    Interview[]
+  tags          ApplicationTag[]
+
+  @@map("applications")
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+model Interview {
+  id              String        @id @default(cuid())
+  applicationId   String        @map("application_id")
+  scheduledAt     DateTime      @map("scheduled_at")
+  type            InterviewType
+  interviewerName String?       @map("interviewer_name")
+  notes           String?
+  outcome         String?
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("interviews")
+}
+
+enum InterviewType {
+  PHONE
+  VIDEO
+  TECHNICAL
+  ONSITE
+  HR
+}
+
+model Contact {
+  id          String  @id @default(cuid())
+  companyId   String  @map("company_id")
+  userId      String  @map("user_id")
+  name        String
+  role        String?
+  email       String?
+  linkedinUrl String? @map("linkedin_url")
+  notes       String?
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("contacts")
+}
+
+model ResumeVersion {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  label      String
+  s3Key      String   @map("s3_key")
+  uploadedAt DateTime @default(now()) @map("uploaded_at")
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications Application[]
+
+  @@map("resume_versions")
+}
+
+model Tag {
+  id     String  @id @default(cuid())
+  userId String  @map("user_id")
+  name   String
+  color  String?
+
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications ApplicationTag[]
+
+  @@map("tags")
+}
+
+model ApplicationTag {
+  applicationId String @map("application_id")
+  tagId         String @map("tag_id")
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  tag         Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([applicationId, tagId])
+  @@map("application_tags")
+}
