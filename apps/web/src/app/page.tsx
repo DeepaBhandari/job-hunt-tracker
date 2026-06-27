@@ -1,8 +1,166 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import {
+  BriefcaseBusiness,
+  CalendarDays,
+  MapPin,
+  Plus,
+  Sparkles,
+  TrendingUp,
+} from 'lucide-react';
+
+type Status =
+  | 'SAVED'
+  | 'APPLIED'
+  | 'SCREENING'
+  | 'INTERVIEW'
+  | 'OFFER'
+  | 'REJECTED'
+  | 'WITHDRAWN';
+
+interface Application {
+  id: string;
+  company: string;
+  title: string;
+  location: string;
+  appliedAt: string;
+  status: Status;
+}
+
+const STATUS_CONFIG: Record<Status, { label: string; dot: string; border: string }> = {
+  SAVED:     { label: 'Saved',     dot: 'bg-slate-400',   border: 'border-t-slate-400'   },
+  APPLIED:   { label: 'Applied',   dot: 'bg-blue-500',    border: 'border-t-blue-500'    },
+  SCREENING: { label: 'Screening', dot: 'bg-amber-500',   border: 'border-t-amber-500'   },
+  INTERVIEW: { label: 'Interview', dot: 'bg-violet-500',  border: 'border-t-violet-500'  },
+  OFFER:     { label: 'Offer',     dot: 'bg-emerald-500', border: 'border-t-emerald-500' },
+  REJECTED:  { label: 'Rejected',  dot: 'bg-red-400',     border: 'border-t-red-400'     },
+  WITHDRAWN: { label: 'Withdrawn', dot: 'bg-slate-300',   border: 'border-t-slate-300'   },
+};
+
+const COLUMNS: Status[] = [
+  'SAVED', 'APPLIED', 'SCREENING', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN',
+];
+
+const APPS: Application[] = [
+  { id: '1',  company: 'Stripe',        title: 'Senior Frontend Engineer', location: 'Remote',             appliedAt: 'Jun 24', status: 'SAVED'     },
+  { id: '2',  company: 'Linear',        title: 'Product Engineer',         location: 'San Francisco, CA',  appliedAt: 'Jun 23', status: 'SAVED'     },
+  { id: '3',  company: 'Vercel',        title: 'DX Engineer',              location: 'Remote',             appliedAt: 'Jun 25', status: 'SAVED'     },
+  { id: '4',  company: 'Figma',         title: 'Software Engineer',        location: 'New York, NY',       appliedAt: 'Jun 21', status: 'APPLIED'   },
+  { id: '5',  company: 'Notion',        title: 'Full Stack Engineer',      location: 'Remote',             appliedAt: 'Jun 19', status: 'APPLIED'   },
+  { id: '6',  company: 'Anthropic',     title: 'Software Engineer',        location: 'San Francisco, CA',  appliedAt: 'Jun 22', status: 'APPLIED'   },
+  { id: '7',  company: 'GitHub',        title: 'Senior Engineer',          location: 'Remote',             appliedAt: 'Jun 16', status: 'SCREENING' },
+  { id: '8',  company: 'Supabase',      title: 'Frontend Engineer',        location: 'Remote',             appliedAt: 'Jun 18', status: 'SCREENING' },
+  { id: '9',  company: 'Tailwind Labs', title: 'Engineer',                 location: 'Remote',             appliedAt: 'Jun 14', status: 'INTERVIEW' },
+  { id: '10', company: 'PlanetScale',   title: 'Software Engineer',        location: 'Remote',             appliedAt: 'Jun 17', status: 'INTERVIEW' },
+  { id: '11', company: 'Railway',       title: 'Product Engineer',         location: 'Remote',             appliedAt: 'Jun 11', status: 'OFFER'     },
+  { id: '12', company: 'Google',        title: 'SWE L4',                   location: 'Mountain View, CA',  appliedAt: 'Jun 6',  status: 'REJECTED'  },
+  { id: '13', company: 'Meta',          title: 'Production Engineer',      location: 'Remote',             appliedAt: 'Jun 8',  status: 'REJECTED'  },
+  { id: '14', company: 'Amazon',        title: 'SDE II',                   location: 'Seattle, WA',        appliedAt: 'Jun 1',  status: 'WITHDRAWN' },
+];
+
+const STATS = [
+  { label: 'Total',      value: APPS.length,                                                              Icon: BriefcaseBusiness },
+  { label: 'Active',     value: APPS.filter((a) => !['REJECTED', 'WITHDRAWN'].includes(a.status)).length, Icon: TrendingUp        },
+  { label: 'Interviews', value: APPS.filter((a) => a.status === 'INTERVIEW').length,                      Icon: CalendarDays      },
+  { label: 'Offers',     value: APPS.filter((a) => a.status === 'OFFER').length,                          Icon: Sparkles          },
+];
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-24">
-      <h1 className="text-4xl font-bold tracking-tight">Job Hunt Tracker</h1>
-      <p className="text-lg text-gray-500">Your job search pipeline, organised.</p>
-    </main>
+    <div className="flex min-h-screen flex-col bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
+        <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-6">
+          <div className="flex items-center gap-2">
+            <BriefcaseBusiness className="size-5 text-primary" />
+            <span className="text-sm font-semibold tracking-tight">Job Hunt Tracker</span>
+          </div>
+          <Button size="sm">
+            <Plus data-icon="inline-start" />
+            Add Application
+          </Button>
+        </div>
+      </header>
+
+      <main className="flex flex-1 flex-col gap-6 px-6 py-6 mx-auto w-full max-w-screen-2xl">
+        {/* Stats row */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {STATS.map(({ label, value, Icon }) => (
+            <Card key={label}>
+              <CardContent className="flex items-center justify-between p-4">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-medium text-muted-foreground">{label}</span>
+                  <span className="text-2xl font-bold tabular-nums">{value}</span>
+                </div>
+                <Icon className="size-5 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Separator />
+
+        {/* Kanban board */}
+        <div className="flex gap-3 overflow-x-auto pb-4">
+          {COLUMNS.map((status) => {
+            const { label, dot, border } = STATUS_CONFIG[status];
+            const cards = APPS.filter((a) => a.status === status);
+
+            return (
+              <div key={status} className="flex w-64 flex-none flex-col gap-2">
+                {/* Column header */}
+                <div className={`rounded-lg border border-t-2 bg-muted/40 px-3 py-2.5 ${border}`}>
+                  <div className="flex items-center gap-2">
+                    <span className={`size-2 rounded-full ${dot}`} />
+                    <span className="text-xs font-semibold">{label}</span>
+                    <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                      {cards.length}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Cards */}
+                <div className="flex flex-col gap-2">
+                  {cards.map((app) => (
+                    <Card
+                      key={app.id}
+                      className="cursor-pointer transition-shadow hover:shadow-md"
+                    >
+                      <CardContent className="flex flex-col gap-2 p-3">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-sm font-semibold leading-tight">
+                            {app.company}
+                          </span>
+                          <span className="text-xs text-muted-foreground leading-snug">
+                            {app.title}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="size-3 flex-none" />
+                            <span className="truncate">{app.location}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <CalendarDays className="size-3 flex-none" />
+                            <span>{app.appliedAt}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+
+                  {cards.length === 0 && (
+                    <div className="rounded-lg border border-dashed py-6 text-center text-xs text-muted-foreground">
+                      No applications
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
+    </div>
   );
 }

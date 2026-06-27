@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { cn } from '@/lib/utils';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const geist = { variable: GeistSans.variable };
 
 export const metadata: Metadata = {
   title: 'Job Hunt Tracker',
@@ -15,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
+    <html lang="en" className={cn('font-sans', geist.variable)}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
