@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { AppHeader } from '@/components/app-header';
 import {
   BriefcaseBusiness,
   CalendarDays,
   MapPin,
-  Plus,
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
@@ -69,21 +69,15 @@ const STATS = [
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <BriefcaseBusiness className="size-5 text-primary" />
-            <span className="text-sm font-semibold tracking-tight">Job Hunt Tracker</span>
-          </div>
-          <Button size="sm">
-            <Plus data-icon="inline-start" />
+      <AppHeader
+        action={
+          <Button size="sm" disabled>
             Add Application
           </Button>
-        </div>
-      </header>
+        }
+      />
 
-      <main className="flex flex-1 flex-col gap-6 px-6 py-6 mx-auto w-full max-w-screen-2xl">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {STATS.map(({ label, value, Icon }) => (
