@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Building2, ExternalLink, Trash2 } from 'lucide-react';
+import { Icons } from '@/lib/icons';
 import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,7 +62,7 @@ export default function CompaniesPage() {
   const companies = data?.companies ?? [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
           <Button size="sm" onClick={() => setShowForm((value) => !value)}>
@@ -74,7 +74,7 @@ export default function CompaniesPage() {
       <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Companies</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Organize employers you are targeting or interviewing with.
           </p>
         </div>
@@ -142,14 +142,14 @@ export default function CompaniesPage() {
         )}
 
         {isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading companies…</p>
+          <p className="text-muted-foreground text-sm">Loading companies…</p>
         ) : companies.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-              <Building2 className="size-8 text-muted-foreground" />
+              <Icons.Building2 className="text-muted-foreground size-8" />
               <div>
                 <p className="font-medium">No companies yet</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Add your first company to start tracking roles.
                 </p>
               </div>
@@ -167,16 +167,16 @@ export default function CompaniesPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center justify-between gap-2">
-                  <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+                  <div className="text-muted-foreground flex flex-col gap-1 text-sm">
                     {company.website && (
                       <a
                         href={company.website}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-foreground hover:underline"
+                        className="text-foreground inline-flex items-center gap-1 hover:underline"
                       >
                         Website
-                        <ExternalLink />
+                        <Icons.ExternalLink />
                       </a>
                     )}
                     <Link href={`/jobs?companyId=${company.id}`} className="hover:underline">
@@ -189,7 +189,7 @@ export default function CompaniesPage() {
                     onClick={() => deleteMutation.mutate(company.id)}
                     disabled={deleteMutation.isPending}
                   >
-                    <Trash2 />
+                    <Icons.Trash2 />
                   </Button>
                 </CardContent>
               </Card>

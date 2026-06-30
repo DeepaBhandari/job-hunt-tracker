@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { Icons } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -49,7 +49,7 @@ export function LoginForm() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {error && (
             <Alert variant="destructive">
-              <AlertCircle />
+              <Icons.AlertCircle />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -82,9 +82,12 @@ export function LoginForm() {
             {loading ? 'Signing in…' : 'Sign in'}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-center text-sm">
             No account?{' '}
-            <Link href="/register" className="font-medium text-foreground underline-offset-4 hover:underline">
+            <Link
+              href="/register"
+              className="text-foreground font-medium underline-offset-4 hover:underline"
+            >
               Create one
             </Link>
           </p>

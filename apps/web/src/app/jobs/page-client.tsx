@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { Briefcase, ExternalLink, Trash2 } from 'lucide-react';
+import { Icons } from '@/lib/icons';
 import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -46,18 +46,11 @@ export default function JobsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['jobs', companyIdFilter],
     queryFn: () =>
-      apiFetch<{ jobs: Job[] }>(
-        companyIdFilter ? `/jobs?companyId=${companyIdFilter}` : '/jobs'
-      ),
+      apiFetch<{ jobs: Job[] }>(companyIdFilter ? `/jobs?companyId=${companyIdFilter}` : '/jobs'),
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: {
-      companyId: string;
-      title: string;
-      location?: string;
-      url?: string;
-    }) =>
+    mutationFn: (payload: { companyId: string; title: string; location?: string; url?: string }) =>
       apiFetch<{ job: Job }>('/jobs', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -84,7 +77,7 @@ export default function JobsPage() {
   const jobs = data?.jobs ?? [];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
           <Button
@@ -103,16 +96,14 @@ export default function JobsPage() {
       <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Jobs</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Track open roles before you turn them into applications.
           </p>
         </div>
 
         {companies.length === 0 && (
           <Alert>
-            <AlertDescription>
-              Add a company first before creating jobs.
-            </AlertDescription>
+            <AlertDescription>Add a company first before creating jobs.</AlertDescription>
           </Alert>
         )}
 
@@ -149,7 +140,7 @@ export default function JobsPage() {
                       required
                       value={companyId}
                       onChange={(event) => setCompanyId(event.target.value)}
-                      className="flex h-8 w-full rounded-lg border border-input bg-background px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+                      className="border-input bg-background focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 flex h-8 w-full rounded-lg border px-2.5 text-sm outline-none"
                     >
                       <option value="" disabled>
                         Select a company
@@ -199,14 +190,14 @@ export default function JobsPage() {
         )}
 
         {isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading jobs…</p>
+          <p className="text-muted-foreground text-sm">Loading jobs…</p>
         ) : jobs.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-              <Briefcase className="size-8 text-muted-foreground" />
+              <Icons.Briefcase className="text-muted-foreground size-8" />
               <div>
                 <p className="font-medium">No jobs yet</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Save roles you want to apply to and track them here.
                 </p>
               </div>
@@ -219,8 +210,8 @@ export default function JobsPage() {
                 <CardContent className="flex items-start justify-between gap-4 p-4">
                   <div className="flex flex-col gap-1">
                     <p className="font-semibold">{job.title}</p>
-                    <p className="text-sm text-muted-foreground">{job.company.name}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">{job.company.name}</p>
+                    <p className="text-muted-foreground text-sm">
                       {[job.location, job.type, job.source].filter(Boolean).join(' · ')}
                     </p>
                     {job.url && (
@@ -231,7 +222,7 @@ export default function JobsPage() {
                         className="inline-flex items-center gap-1 text-sm hover:underline"
                       >
                         View posting
-                        <ExternalLink />
+                        <Icons.ExternalLink />
                       </a>
                     )}
                   </div>
@@ -241,7 +232,7 @@ export default function JobsPage() {
                     onClick={() => deleteMutation.mutate(job.id)}
                     disabled={deleteMutation.isPending}
                   >
-                    <Trash2 />
+                    <Icons.Trash2 />
                   </Button>
                 </CardContent>
               </Card>

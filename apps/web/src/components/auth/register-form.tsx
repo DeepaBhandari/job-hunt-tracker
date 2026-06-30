@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
+import { Icons } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -50,7 +50,7 @@ export function RegisterForm() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {error && (
             <Alert variant="destructive">
-              <AlertCircle />
+              <Icons.AlertCircle />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -94,9 +94,12 @@ export function RegisterForm() {
             {loading ? 'Creating account…' : 'Create account'}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-center text-sm">
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
+            <Link
+              href="/login"
+              className="text-foreground font-medium underline-offset-4 hover:underline"
+            >
               Sign in
             </Link>
           </p>
