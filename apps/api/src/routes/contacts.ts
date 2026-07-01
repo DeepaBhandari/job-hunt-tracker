@@ -14,8 +14,7 @@ const CreateContactSchema = z.object({
   notes: z.string().optional(),
 });
 
-const UpdateContactSchema = CreateContactSchema.omit({ companyId: true })
-  .partial();
+const UpdateContactSchema = CreateContactSchema.omit({ companyId: true }).partial();
 
 const router = Router();
 
@@ -64,14 +63,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', validate(CreateContactSchema), async (req, res, next) => {
   try {
     const { userId } = getAuthenticatedRequest(req);
-    const {
-      companyId,
-      name,
-      role,
-      email,
-      linkedinUrl,
-      notes,
-    } = req.body as {
+    const { companyId, name, role, email, linkedinUrl, notes } = req.body as {
       companyId: string;
       name: string;
       role?: string;
@@ -125,54 +117,44 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // PATCH update contact
-router.patch(
-  '/:id',
-  validate(UpdateContactSchema),
-  async (req, res, next) => {
-    try {
-      const { userId } = getAuthenticatedRequest(req);
-      const existing = await prisma.contact.findFirst({
-        where: { id: req.params.id, userId },
-      });
+router.patch('/:id', validate(UpdateContactSchema), async (req, res, next) => {
+  try {
+    const { userId } = getAuthenticatedRequest(req);
+    const existing = await prisma.contact.findFirst({
+      where: { id: req.params.id, userId },
+    });
 
-      if (!existing) {
-        throw new AppError(404, 'Contact not found');
-      }
-
-      const {
-        name,
-        role,
-        email,
-        linkedinUrl,
-        notes,
-      } = req.body as {
-        name?: string;
-        role?: string;
-        email?: string;
-        linkedinUrl?: string;
-        notes?: string;
-      };
-
-      const contact = await prisma.contact.update({
-        where: { id: existing.id },
-        data: {
-          ...(name !== undefined && { name }),
-          ...(role !== undefined && { role }),
-          ...(email !== undefined && { email }),
-          ...(linkedinUrl !== undefined && { linkedinUrl }),
-          ...(notes !== undefined && { notes }),
-        },
-        include: {
-          company: { select: { id: true, name: true } },
-        },
-      });
-
-      res.json({ contact });
-    } catch (error) {
-      next(error);
+    if (!existing) {
+      throw new AppError(404, 'Contact not found');
     }
+
+    const { name, role, email, linkedinUrl, notes } = req.body as {
+      name?: string;
+      role?: string;
+      email?: string;
+      linkedinUrl?: string;
+      notes?: string;
+    };
+
+    const contact = await prisma.contact.update({
+      where: { id: existing.id },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(role !== undefined && { role }),
+        ...(email !== undefined && { email }),
+        ...(linkedinUrl !== undefined && { linkedinUrl }),
+        ...(notes !== undefined && { notes }),
+      },
+      include: {
+        company: { select: { id: true, name: true } },
+      },
+    });
+
+    res.json({ contact });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // DELETE contact
 router.delete('/:id', async (req, res, next) => {

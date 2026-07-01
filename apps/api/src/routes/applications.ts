@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import {
-  CreateApplicationSchema,
-  UpdateApplicationSchema,
-} from '@job-hunt/types';
+import { CreateApplicationSchema, UpdateApplicationSchema } from '@job-hunt/types';
 import { prisma } from '../lib/prisma.js';
 import { validate } from '../middleware/validate.js';
 import { AppError } from '../middleware/error.js';
@@ -76,14 +73,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', validate(CreateApplicationSchema), async (req, res, next) => {
   try {
     const { userId } = getAuthenticatedRequest(req);
-    const {
-      jobId,
-      status,
-      appliedAt,
-      resumeVersionId,
-      coverLetter,
-      notes,
-    } = req.body as {
+    const { jobId, status, appliedAt, resumeVersionId, coverLetter, notes } = req.body as {
       jobId: string;
       status?: string;
       appliedAt?: string;
@@ -167,66 +157,56 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // PATCH update application
-router.patch(
-  '/:id',
-  validate(UpdateApplicationSchema),
-  async (req, res, next) => {
-    try {
-      const { userId } = getAuthenticatedRequest(req);
-      const existing = await prisma.application.findFirst({
-        where: { id: req.params.id, userId },
-      });
+router.patch('/:id', validate(UpdateApplicationSchema), async (req, res, next) => {
+  try {
+    const { userId } = getAuthenticatedRequest(req);
+    const existing = await prisma.application.findFirst({
+      where: { id: req.params.id, userId },
+    });
 
-      if (!existing) {
-        throw new AppError(404, 'Application not found');
-      }
-
-      const {
-        status,
-        appliedAt,
-        resumeVersionId,
-        coverLetter,
-        notes,
-      } = req.body as {
-        status?: string;
-        appliedAt?: string;
-        resumeVersionId?: string;
-        coverLetter?: string;
-        notes?: string;
-      };
-
-      const application = await prisma.application.update({
-        where: { id: existing.id },
-        data: {
-          ...(status !== undefined && { status: status as never }),
-          ...(appliedAt !== undefined && {
-            appliedAt: appliedAt ? new Date(appliedAt) : null,
-          }),
-          ...(resumeVersionId !== undefined && { resumeVersionId }),
-          ...(coverLetter !== undefined && { coverLetter }),
-          ...(notes !== undefined && { notes }),
-        },
-        include: {
-          job: {
-            include: {
-              company: { select: { id: true, name: true } },
-            },
-          },
-          resumeVersion: true,
-          interviews: {
-            orderBy: { scheduledAt: 'asc' },
-          },
-          tags: {
-            include: { tag: { select: { id: true, name: true, color: true } } },
-          },
-        },
-      });
-
-      res.json({ application });
-    } catch (error) {
-      next(error);
+    if (!existing) {
+      throw new AppError(404, 'Application not found');
     }
+
+    const { status, appliedAt, resumeVersionId, coverLetter, notes } = req.body as {
+      status?: string;
+      appliedAt?: string;
+      resumeVersionId?: string;
+      coverLetter?: string;
+      notes?: string;
+    };
+
+    const application = await prisma.application.update({
+      where: { id: existing.id },
+      data: {
+        ...(status !== undefined && { status: status as never }),
+        ...(appliedAt !== undefined && {
+          appliedAt: appliedAt ? new Date(appliedAt) : null,
+        }),
+        ...(resumeVersionId !== undefined && { resumeVersionId }),
+        ...(coverLetter !== undefined && { coverLetter }),
+        ...(notes !== undefined && { notes }),
+      },
+      include: {
+        job: {
+          include: {
+            company: { select: { id: true, name: true } },
+          },
+        },
+        resumeVersion: true,
+        interviews: {
+          orderBy: { scheduledAt: 'asc' },
+        },
+        tags: {
+          include: { tag: { select: { id: true, name: true, color: true } } },
+        },
+      },
+    });
+
+    res.json({ application });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default router;

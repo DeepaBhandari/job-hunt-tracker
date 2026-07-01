@@ -31,31 +31,27 @@ router.get('/', async (req, res, next) => {
 });
 
 // POST create new resume version
-router.post(
-  '/',
-  validate(CreateResumeVersionSchema),
-  async (req, res, next) => {
-    try {
-      const { userId } = getAuthenticatedRequest(req);
-      const { label, s3Key } = req.body as {
-        label: string;
-        s3Key: string;
-      };
+router.post('/', validate(CreateResumeVersionSchema), async (req, res, next) => {
+  try {
+    const { userId } = getAuthenticatedRequest(req);
+    const { label, s3Key } = req.body as {
+      label: string;
+      s3Key: string;
+    };
 
-      const resumeVersion = await prisma.resumeVersion.create({
-        data: {
-          userId,
-          label,
-          s3Key,
-        },
-      });
+    const resumeVersion = await prisma.resumeVersion.create({
+      data: {
+        userId,
+        label,
+        s3Key,
+      },
+    });
 
-      res.status(201).json({ resumeVersion });
-    } catch (error) {
-      next(error);
-    }
+    res.status(201).json({ resumeVersion });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 // GET single resume version
 router.get('/:id', async (req, res, next) => {
@@ -122,10 +118,7 @@ router.delete('/:id', async (req, res, next) => {
     });
 
     if (applicationsUsingResume.length > 0) {
-      throw new AppError(
-        400,
-        'Cannot delete resume version in use by applications'
-      );
+      throw new AppError(400, 'Cannot delete resume version in use by applications');
     }
 
     await prisma.resumeVersion.delete({
