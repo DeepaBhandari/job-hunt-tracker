@@ -7,6 +7,7 @@ import healthRouter from './routes/health.js';
 import authRouter from './routes/auth.js';
 import companiesRouter from './routes/companies.js';
 import jobsRouter from './routes/jobs.js';
+import applicationsRouter from './routes/applications.js';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/health', healthRouter);
 app.use('/auth', authRouter);
 app.use('/companies', companiesRouter);
 app.use('/jobs', jobsRouter);
+app.use('/applications', applicationsRouter);
 
 app.use(errorMiddleware);
 
