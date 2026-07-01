@@ -9,6 +9,7 @@ import companiesRouter from './routes/companies.js';
 import jobsRouter from './routes/jobs.js';
 import applicationsRouter from './routes/applications.js';
 import interviewsRouter from './routes/interviews.js';
+import contactsRouter from './routes/contacts.js';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/companies', companiesRouter);
 app.use('/jobs', jobsRouter);
 app.use('/applications', applicationsRouter);
 app.use('/interviews', interviewsRouter);
+app.use('/contacts', contactsRouter);
 
 app.use(errorMiddleware);
 
