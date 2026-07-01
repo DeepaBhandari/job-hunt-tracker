@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { InterviewForm } from '@/components/interview-form';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface Company {
@@ -290,41 +291,7 @@ export default function ApplicationDetailPage() {
             </Card>
 
             {/* Interviews */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Interviews ({app.interviews.length})</CardTitle>
-                <CardDescription>Track scheduled interviews and outcomes</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {app.interviews.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">No interviews scheduled yet.</p>
-                ) : (
-                  <div className="space-y-4">
-                    {app.interviews.map((interview) => (
-                      <div key={interview.id} className="rounded border p-3">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="font-semibold">{interview.type}</p>
-                            <p className="text-muted-foreground text-sm">
-                              {new Date(interview.scheduledAt).toLocaleDateString()}
-                            </p>
-                            {interview.interviewerName && (
-                              <p className="text-sm">{interview.interviewerName}</p>
-                            )}
-                          </div>
-                          {interview.outcome && (
-                            <Badge variant="outline">{interview.outcome}</Badge>
-                          )}
-                        </div>
-                        {interview.notes && (
-                          <p className="text-muted-foreground mt-2 text-sm">{interview.notes}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <InterviewForm applicationId={app.id} />
           </div>
 
           {/* Sidebar */}
