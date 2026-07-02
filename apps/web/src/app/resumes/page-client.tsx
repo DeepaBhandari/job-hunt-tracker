@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface ResumeVersion {
@@ -218,8 +217,8 @@ export default function ResumesPage() {
           </CardHeader>
           <CardContent className="text-muted-foreground text-sm">
             <p>
-              For now, you can manually add resume versions by providing S3 keys. In Phase 3, we'll
-              add direct file upload with presigned URLs.
+              For now, you can manually add resume versions by providing S3 keys. In Phase 3, we
+              will add direct file upload with presigned URLs.
             </p>
           </CardContent>
         </Card>

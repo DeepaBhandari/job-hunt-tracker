@@ -2,14 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Icons } from '@/lib/icons';
 import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface Company {
@@ -122,7 +120,7 @@ export default function ContactsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Add New Contact</CardTitle>
-              <CardDescription>Track people you've met or want to connect with</CardDescription>
+              <CardDescription>Track people you have met or want to connect with</CardDescription>
             </CardHeader>
             <CardContent>
               <form

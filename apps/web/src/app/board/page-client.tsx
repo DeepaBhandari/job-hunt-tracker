@@ -4,9 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppHeader } from '@/components/app-header';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { apiFetch, ApiError } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
 interface Company {
   id: string;
@@ -27,16 +25,6 @@ interface Application {
 }
 
 const STATUSES = ['SAVED', 'APPLIED', 'SCREENING', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'];
-
-const STATUS_COLORS: Record<string, string> = {
-  SAVED: 'bg-gray-100 text-gray-800',
-  APPLIED: 'bg-blue-100 text-blue-800',
-  SCREENING: 'bg-purple-100 text-purple-800',
-  INTERVIEW: 'bg-yellow-100 text-yellow-800',
-  OFFER: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
-  WITHDRAWN: 'bg-slate-100 text-slate-800',
-};
 
 export default function KanbanPage() {
   const queryClient = useQueryClient();

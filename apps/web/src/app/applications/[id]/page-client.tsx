@@ -3,17 +3,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Icons } from '@/lib/icons';
 import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { InterviewForm } from '@/components/interview-form';
-import { apiFetch, ApiError } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
 interface Company {
   id: string;
@@ -75,7 +73,6 @@ export default function ApplicationDetailPage() {
   const queryClient = useQueryClient();
   const [editingNotes, setEditingNotes] = useState(false);
   const [notes, setNotes] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
 
   const { data, isLoading } = useQuery({
     queryKey: ['application', applicationId],
