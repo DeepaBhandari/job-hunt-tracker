@@ -169,7 +169,7 @@ export default function ResumesPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <h3 className="text-base font-semibold">{resume.label}</h3>
-                      <p className="text-muted-foreground mt-1 break-all font-mono text-sm text-xs">
+                      <p className="text-muted-foreground mt-1 break-all font-mono text-sm">
                         {resume.s3Key}
                       </p>
                       <p className="text-muted-foreground mt-2 text-xs">
