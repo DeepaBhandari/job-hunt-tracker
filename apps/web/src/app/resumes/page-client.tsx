@@ -21,7 +21,6 @@ export default function ResumesPage() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [label, setLabel] = useState('');
-  const [s3Key, setS3Key] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,12 +39,15 @@ export default function ResumesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resume-versions'] });
       setLabel('');
-      setS3Key('');
+      setFile(null);
       setShowForm(false);
       setError(null);
     },
     onError: (err) => {
       setError(err instanceof ApiError ? err.message : 'Failed to add resume');
+    },
+    onSettled: () => {
+      setUploading(false);
     },
   });
 
