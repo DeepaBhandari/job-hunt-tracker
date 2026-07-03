@@ -22,6 +22,8 @@ export default function ResumesPage() {
   const [showForm, setShowForm] = useState(false);
   const [label, setLabel] = useState('');
   const [s3Key, setS3Key] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -99,15 +101,42 @@ export default function ResumesPage() {
             <CardHeader>
               <CardTitle>Add Resume Version</CardTitle>
               <CardDescription>
-                Track a new version of your resume (Currently: manual S3 key entry)
+                Track a new version of your resume and upload directly to S3.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  if (label && s3Key) {
-                    createMutation.mutate({ label, s3Key });
+                  if (!label || !file) {
+                    setError('Please provide a label and select a file.');
+                    return;
+                  }
+
+                  setError(null);
+                  setUploading(true);
+
+                  try {
+                    const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-');
+                    const key = `resumes/${Date.now()}-${safeName}`;
+                    const presign = await apiFetch<{ uploadUrl: string }>('/resume-upload', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        key,
+                        contentType: file.type || 'application/pdf',
+                      }),
+                    });
+
+                    await fetch(presign.uploadUrl, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': file.type || 'application/pdf' },
+                      body: file,
+                    });
+
+                    createMutation.mutate({ label, s3Key: key });
+                  } catch (err) {
+                    setError(err instanceof ApiError ? err.message : 'Failed to upload file');
+                    setUploading(false);
                   }
                 }}
                 className="space-y-4"
@@ -132,21 +161,20 @@ export default function ResumesPage() {
                   </p>
                 </div>
                 <div>
-                  <Label htmlFor="s3Key">S3 Key</Label>
-                  <Input
-                    id="s3Key"
-                    value={s3Key}
-                    onChange={(e) => setS3Key(e.target.value)}
-                    placeholder="e.g., resumes/john-smith-2024.pdf"
-                    required
+                  <Label htmlFor="resumeFile">Resume file</Label>
+                  <input
+                    id="resumeFile"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                     className="mt-1"
                   />
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Enter the S3 bucket key where your resume is stored
+                    Select your resume file to upload to S3.
                   </p>
                 </div>
-                <Button type="submit" disabled={!label || !s3Key || createMutation.isPending}>
-                  {createMutation.isPending ? 'Adding...' : 'Add Resume'}
+                <Button type="submit" disabled={!label || !file || uploading}>
+                  {uploading ? 'Uploading...' : 'Upload resume'}
                 </Button>
               </form>
             </CardContent>
@@ -210,18 +238,6 @@ export default function ResumesPage() {
             ))}
           </div>
         )}
-
-        <Card className="border-blue-200 bg-blue-50">
-          <CardHeader>
-            <CardTitle className="text-sm">Note: S3 Upload Coming Soon</CardTitle>
-          </CardHeader>
-          <CardContent className="text-muted-foreground text-sm">
-            <p>
-              For now, you can manually add resume versions by providing S3 keys. In Phase 3, we
-              will add direct file upload with presigned URLs.
-            </p>
-          </CardContent>
-        </Card>
       </main>
     </div>
   );

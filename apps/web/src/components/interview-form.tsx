@@ -34,6 +34,8 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
 
   const { data: applicationData } = useQuery({
     queryKey: ['application', applicationId],
+    queryFn: () =>
+      apiFetch<{ application: { interviews: Interview[] } }>(`/applications/${applicationId}`),
   });
 
   const interviews = applicationData?.application?.interviews ?? [];

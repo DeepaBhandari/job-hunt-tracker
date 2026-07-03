@@ -209,4 +209,23 @@ router.patch('/:id', validate(UpdateApplicationSchema), async (req, res, next) =
   }
 });
 
+// DELETE application
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { userId } = getAuthenticatedRequest(req);
+    const existing = await prisma.application.findFirst({
+      where: { id: req.params.id, userId },
+    });
+
+    if (!existing) {
+      throw new AppError(404, 'Application not found');
+    }
+
+    await prisma.application.delete({ where: { id: existing.id } });
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

@@ -10,6 +10,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.396.0",
+    "@aws-sdk/s3-request-presigner": "^3.396.0",
     "@job-hunt/db": "workspace:*",
     "@job-hunt/types": "workspace:*",
     "bcryptjs": "^3.0.3",

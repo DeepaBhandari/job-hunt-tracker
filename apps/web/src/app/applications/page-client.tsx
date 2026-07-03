@@ -52,12 +52,18 @@ export default function ApplicationsPage() {
   const [showForm, setShowForm] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [jobId, setJobId] = useState('');
+  const [resumeVersionId, setResumeVersionId] = useState('');
   const [status, setStatus] = useState('SAVED');
   const [error, setError] = useState<string | null>(null);
 
   const { data: jobsData } = useQuery({
     queryKey: ['jobs'],
     queryFn: () => apiFetch<{ jobs: Job[] }>('/jobs'),
+  });
+
+  const { data: resumeData } = useQuery({
+    queryKey: ['resume-versions'],
+    queryFn: () => apiFetch<{ resumeVersions: ResumeVersion[] }>('/resume-versions'),
   });
 
   const { data, isLoading } = useQuery({
@@ -69,7 +75,7 @@ export default function ApplicationsPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: { jobId: string; status: string }) =>
+    mutationFn: (payload: { jobId: string; resumeVersionId?: string; status: string }) =>
       apiFetch<{ application: Application }>('/applications', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -77,6 +83,7 @@ export default function ApplicationsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
       setJobId('');
+      setResumeVersionId('');
       setStatus('SAVED');
       setShowForm(false);
       setError(null);
@@ -126,7 +133,11 @@ export default function ApplicationsPage() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (jobId) {
-                    createMutation.mutate({ jobId, status });
+                    createMutation.mutate({
+                      jobId,
+                      resumeVersionId: resumeVersionId || undefined,
+                      status,
+                    });
                   }
                 }}
                 className="space-y-4"
@@ -153,6 +164,24 @@ export default function ApplicationsPage() {
                     ))}
                   </select>
                 </div>
+                {resumeData?.resumeVersions?.length ? (
+                  <div>
+                    <Label htmlFor="resumeVersion">Resume Version</Label>
+                    <select
+                      id="resumeVersion"
+                      value={resumeVersionId}
+                      onChange={(e) => setResumeVersionId(e.target.value)}
+                      className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                    >
+                      <option value="">None</option>
+                      {resumeData.resumeVersions.map((resume) => (
+                        <option key={resume.id} value={resume.id}>
+                          {resume.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
                 <div>
                   <Label htmlFor="status">Initial Status</Label>
                   <select
