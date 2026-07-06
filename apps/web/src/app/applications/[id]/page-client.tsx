@@ -163,7 +163,7 @@ export default function ApplicationDetailPage() {
               <p className="text-muted-foreground text-sm">{app.job.location}</p>
             )}
           </div>
-          <Badge className={STATUS_COLORS[app.status] || 'bg-gray-100'} size="lg">
+          <Badge className={STATUS_COLORS[app.status] || 'bg-gray-100'}>
             {app.status}
           </Badge>
         </div>
