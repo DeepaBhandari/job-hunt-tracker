@@ -12,6 +12,11 @@ import {
   Sparkles,
   TrendingUp,
   AlertCircle,
+  Percent,
+  Clock,
+  Download,
+  DollarSign,
+  BarChart3,
 } from 'lucide-react';
 
 export const Icons = {
@@ -28,6 +33,11 @@ export const Icons = {
   Sparkles,
   TrendingUp,
   AlertCircle,
+  Percent,
+  Clock,
+  Download,
+  DollarSign,
+  BarChart3,
 };
 
 export type IconName = keyof typeof Icons;
