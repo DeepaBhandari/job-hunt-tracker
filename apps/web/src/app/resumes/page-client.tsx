@@ -13,7 +13,7 @@ import { apiFetch, ApiError } from '@/lib/api';
 interface ResumeVersion {
   id: string;
   label: string;
-  s3Key: string;
+  filePath: string;
   uploadedAt: string;
 }
 
@@ -31,7 +31,7 @@ export default function ResumesPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: { label: string; s3Key: string }) =>
+    mutationFn: (payload: { label: string; filePath: string }) =>
       apiFetch<{ resumeVersion: ResumeVersion }>('/resume-versions', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -103,7 +103,7 @@ export default function ResumesPage() {
             <CardHeader>
               <CardTitle>Add Resume Version</CardTitle>
               <CardDescription>
-                Track a new version of your resume and upload directly to S3.
+                Track a new version of your resume and upload it to the server.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -119,23 +119,15 @@ export default function ResumesPage() {
                   setUploading(true);
 
                   try {
-                    const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '-');
-                    const key = `resumes/${Date.now()}-${safeName}`;
-                    const presign = await apiFetch<{ uploadUrl: string }>('/resume-upload', {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const upload = await apiFetch<{ filePath: string }>('/resume-upload', {
                       method: 'POST',
-                      body: JSON.stringify({
-                        key,
-                        contentType: file.type || 'application/pdf',
-                      }),
+                      body: formData,
                     });
 
-                    await fetch(presign.uploadUrl, {
-                      method: 'PUT',
-                      headers: { 'Content-Type': file.type || 'application/pdf' },
-                      body: file,
-                    });
-
-                    createMutation.mutate({ label, s3Key: key });
+                    createMutation.mutate({ label, filePath: upload.filePath });
                   } catch (err) {
                     setError(err instanceof ApiError ? err.message : 'Failed to upload file');
                     setUploading(false);
@@ -172,7 +164,7 @@ export default function ResumesPage() {
                     className="mt-1"
                   />
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Select your resume file to upload to S3.
+                    Select your resume file to upload to the server.
                   </p>
                 </div>
                 <Button type="submit" disabled={!label || !file || uploading}>
@@ -199,9 +191,12 @@ export default function ResumesPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <h3 className="text-base font-semibold">{resume.label}</h3>
-                      <p className="text-muted-foreground mt-1 break-all font-mono text-sm">
-                        {resume.s3Key}
-                      </p>
+                      <a
+                        href={`/api/resume-versions/${resume.id}/file`}
+                        className="text-muted-foreground mt-1 block break-all font-mono text-sm hover:underline"
+                      >
+                        {resume.filePath}
+                      </a>
                       <p className="text-muted-foreground mt-2 text-xs">
                         Uploaded {new Date(resume.uploadedAt).toLocaleDateString()}
                       </p>

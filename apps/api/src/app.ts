@@ -11,6 +11,8 @@ import applicationsRouter from './routes/applications.js';
 import interviewsRouter from './routes/interviews.js';
 import contactsRouter from './routes/contacts.js';
 import resumeVersionsRouter from './routes/resume-versions.js';
+import resumeUploadRouter from './routes/resume-upload.js';
+import aiRouter from './routes/ai.js';
 import statsRouter from './routes/stats.js';
 
 const app = express();
@@ -33,6 +35,8 @@ app.use('/applications', applicationsRouter);
 app.use('/interviews', interviewsRouter);
 app.use('/contacts', contactsRouter);
 app.use('/resume-versions', resumeVersionsRouter);
+app.use('/resume-upload', resumeUploadRouter);
+app.use('/ai', aiRouter);
 app.use('/stats', statsRouter);
 
 app.use(errorMiddleware);

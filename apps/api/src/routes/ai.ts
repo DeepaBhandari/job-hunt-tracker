@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { generateCoverLetter, summarizeJobPosting } from '../lib/claude.js';
+import { generateCoverLetter, summarizeJobPosting } from '../lib/ai.js';
 import { ParseJobUrlSchema, GenerateCoverLetterSchema } from '@job-hunt/types';
 import { prisma } from '../lib/prisma.js';
 import { requireAuth, getAuthenticatedRequest } from '../middleware/auth.js';

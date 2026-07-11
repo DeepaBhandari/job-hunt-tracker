@@ -145,7 +145,7 @@ model ResumeVersion {
   id         String   @id @default(cuid())
   userId     String   @map("user_id")
   label      String
-  s3Key      String   @map("s3_key")
+  filePath   String   @map("file_path")
   uploadedAt DateTime @default(now()) @map("uploaded_at")
 
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)

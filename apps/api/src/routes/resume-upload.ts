@@ -1,22 +1,26 @@
 import { Router } from 'express';
-import { z } from 'zod';
-import { requireAuth, getAuthenticatedRequest } from '../middleware/auth.js';
-import { presignResumeUpload } from '../lib/s3.js';
+import multer from 'multer';
+import { requireAuth } from '../middleware/auth.js';
+import { AppError } from '../middleware/error.js';
+import { saveResumeFile } from '../lib/storage.js';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
 
 const router = Router();
 
-const PresignResumeSchema = z.object({
-  key: z.string().min(1),
-  contentType: z.string().min(1),
-});
-
 router.use(requireAuth);
 
-router.post('/', async (req, res, next) => {
+router.post('/', upload.single('file'), async (req, res, next) => {
   try {
-    const body = PresignResumeSchema.parse(req.body);
-    const url = await presignResumeUpload(body.key, body.contentType);
-    res.json({ uploadUrl: url, key: body.key });
+    if (!req.file) {
+      throw new AppError(400, 'A resume file is required');
+    }
+
+    const filePath = await saveResumeFile(req.file.buffer, req.file.originalname);
+    res.json({ filePath });
   } catch (error) {
     next(error);
   }
