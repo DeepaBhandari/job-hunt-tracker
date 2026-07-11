@@ -17,10 +17,14 @@ build
 .env.*.local
 !.env.example
 !.env.local.example
+!.env.docker.example
 
 # Prisma
 *.db
 *.db-journal
+
+# Local resume uploads
+apps/api/uploads
 
 # Misc
 .DS_Store

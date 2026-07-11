@@ -1,0 +1,15 @@
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/out
+apps/api/uploads
+.git
+.vscode
+.idea
+**/*.log
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.docker.example
