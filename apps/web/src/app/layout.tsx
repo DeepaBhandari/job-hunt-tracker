@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { cn } from '@/lib/utils';
 import { QueryProvider } from '@/providers/query-provider';
+import { ThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
 const geist = { variable: GeistSans.variable };
@@ -17,9 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn('font-sans', geist.variable)}>
+    <html lang="en" className={cn('font-sans', geist.variable)} suppressHydrationWarning>
       <body className="antialiased">
-        <QueryProvider>{children}</QueryProvider>
+        <ThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

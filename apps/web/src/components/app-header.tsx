@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Icons } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { cn } from '@/lib/utils';
 import { logout } from '@/lib/auth';
 
@@ -58,6 +59,7 @@ export function AppHeader({ action }: AppHeaderProps) {
 
         <div className="flex items-center gap-2">
           {action}
+          <ThemeToggle />
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <Icons.LogOut data-icon="inline-start" />
             Sign out

@@ -92,7 +92,7 @@ ApplicationTag (application_id, tag_id)
 - [ ] Export to CSV
 
 ### Phase 5 — Polish & Ongoing Streak
-- [ ] Dark mode
+- [x] Dark mode
 - [ ] Email notifications for upcoming interviews (Resend)
 - [ ] Real-time alerts with Socket.io
 - [ ] Command palette (cmdk)

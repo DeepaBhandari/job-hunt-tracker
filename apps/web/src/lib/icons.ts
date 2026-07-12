@@ -17,6 +17,8 @@ import {
   Download,
   DollarSign,
   BarChart3,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 export const Icons = {
@@ -38,6 +40,8 @@ export const Icons = {
   Download,
   DollarSign,
   BarChart3,
+  Sun,
+  Moon,
 };
 
 export type IconName = keyof typeof Icons;

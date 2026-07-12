@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { AppHeader } from '@/components/app-header';
 import { Icons } from '@/lib/icons';
-import { useState } from 'react';
 
 type Status = 'SAVED' | 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
 
@@ -169,15 +168,8 @@ const STATS = [
 ];
 
 export default function Home() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  const themeClass = theme === 'light' ? '' : 'dark';
   return (
-    <div className={`bg-background ${themeClass} flex min-h-screen flex-col`}>
+    <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
           <Button size="sm" disabled>
@@ -186,9 +178,7 @@ export default function Home() {
         }
       />
 
-      <main
-        className={`mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6 ${themeClass}`}
-      >
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {STATS.map(({ label, value, Icon }) => (
