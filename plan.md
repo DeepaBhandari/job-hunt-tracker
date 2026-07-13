@@ -15,8 +15,8 @@ A full-stack multi-user web app to manage job applications. Anyone can sign up a
 | Database | PostgreSQL + Prisma ORM |
 | Auth | Better Auth (JWT in httpOnly cookies, Google OAuth) |
 | Validation | Zod (shared between frontend and backend) |
-| AI | Claude API (claude-sonnet-4-6) |
-| File Storage | AWS S3 (presigned URLs for resume uploads) |
+| AI | OpenRouter |
+| File Storage | Local disk (UPLOAD_DIR, served via authenticated route) |
 | Deployment | Vercel (frontend) + Railway (API + PostgreSQL) |
 
 ---
