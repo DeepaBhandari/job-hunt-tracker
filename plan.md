@@ -49,7 +49,7 @@ Application    (id, job_id, user_id, status, applied_at, resume_version_id, cove
 Interview      (id, application_id, scheduled_at, type, interviewer_name, notes, outcome)
   type: PHONE | VIDEO | TECHNICAL | ONSITE | HR
 Contact        (id, company_id, user_id, name, role, email, linkedin_url, notes)
-ResumeVersion  (id, user_id, label, s3_key, uploaded_at)
+ResumeVersion  (id, user_id, label, file_path, uploaded_at)
 Tag            (id, user_id, name, color)
 ApplicationTag (application_id, tag_id)
 ```
