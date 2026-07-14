@@ -59,37 +59,37 @@ ApplicationTag (application_id, tag_id)
 ## Feature Phases
 
 ### Phase 1 — Foundation (Week 1–2)
-- [ ] Monorepo scaffold: Turborepo + pnpm workspaces + shared ESLint/Prettier
-- [ ] Prisma schema + first migration (User, Company, Job)
-- [ ] Express API boilerplate: error middleware, Zod validation, health endpoint
-- [ ] Auth: register, login, logout, refresh token (JWT in httpOnly cookie)
+- [x] Monorepo scaffold: Turborepo + pnpm workspaces + shared ESLint/Prettier
+- [x] Prisma schema + first migration (User, Company, Job)
+- [x] Express API boilerplate: error middleware, Zod validation, health endpoint
+- [x] Auth: register, login, logout, refresh token (JWT in httpOnly cookie)
 - [ ] Google OAuth
-- [ ] Next.js auth pages + protected route middleware
-- [ ] Company CRUD (API + frontend)
-- [ ] Job CRUD (API + frontend)
+- [x] Next.js auth pages + protected route middleware
+- [x] Company CRUD (API + frontend)
+- [x] Job CRUD (API + frontend)
 
 ### Phase 2 — Core Tracking (Week 3–4)
-- [ ] Application CRUD + status field
-- [ ] Kanban board — drag-and-drop between stages (react-beautiful-dnd)
-- [ ] Application detail page: status timeline, notes
-- [ ] Interview scheduling: create, edit, mark outcome
-- [ ] Contact tracker per company
-- [ ] Resume version upload via S3 presigned URLs
-- [ ] Attach resume version when applying
+- [x] Application CRUD + status field
+- [x] Kanban board — drag-and-drop between stages (native HTML5 DnD)
+- [x] Application detail page: status timeline, notes
+- [x] Interview scheduling: create, edit, mark outcome
+- [x] Contact tracker per company
+- [x] Resume version upload (local disk, served via authenticated route)
+- [x] Attach resume version when applying
 
 ### Phase 3 — AI Features (Week 5–6)
-- [ ] Claude API integration in Express (server-side only)
-- [ ] Cover letter generator (job description + resume → cover letter)
+- [x] OpenRouter integration in Express (server-side only)
+- [x] Cover letter generator (job description + resume → cover letter)
 - [ ] Resume gap analyzer (job description → missing keywords/skills)
 - [ ] Interview prep generator (job title + stage → 10 questions with coaching)
-- [ ] Save job from URL (paste link → Claude extracts job details)
+- [x] Save job from URL (paste link → AI extracts job details)
 
 ### Phase 4 — Analytics Dashboard (Week 7–8)
-- [ ] Stats API: total apps, response rate, avg days to response, active count
-- [ ] Recharts dashboard: applications over time, stage funnel, source breakdown
-- [ ] Weekly digest view: this week's activity + upcoming interviews
-- [ ] Salary range tracker across applications
-- [ ] Export to CSV
+- [x] Stats API: total apps, response rate, avg days to response, active count
+- [x] Recharts dashboard: applications over time, stage funnel, source breakdown
+- [x] Weekly digest view: this week's activity + upcoming interviews
+- [x] Salary range tracker across applications
+- [x] Export to CSV
 
 ### Phase 5 — Polish & Ongoing Streak
 - [x] Dark mode
