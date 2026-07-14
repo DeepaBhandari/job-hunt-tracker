@@ -91,13 +91,13 @@ export default function KanbanPage() {
           {columns.map((column) => (
             <div
               key={column.status}
-              className="flex w-80 flex-col rounded-lg border border-gray-200 bg-gray-50"
+              className="border-border bg-muted/50 flex w-80 flex-col rounded-lg border"
             >
               {/* Column header */}
-              <div className="border-b border-gray-200 p-4">
+              <div className="border-border border-b p-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-semibold">{column.status}</h2>
-                  <span className="text-muted-foreground rounded bg-white px-2 py-1 text-xs font-medium">
+                  <span className="text-muted-foreground bg-background rounded px-2 py-1 text-xs font-medium">
                     {column.apps.length}
                   </span>
                 </div>
@@ -119,7 +119,7 @@ export default function KanbanPage() {
                       <div
                         draggable
                         onDragStart={(e) => handleDragStart(e, app.id)}
-                        className={`cursor-move rounded-md border-2 border-transparent bg-white p-3 transition-shadow hover:shadow-md ${
+                        className={`bg-card cursor-move rounded-md border-2 border-transparent p-3 transition-shadow hover:shadow-md ${
                           draggedId === app.id ? 'opacity-50' : ''
                         }`}
                       >
