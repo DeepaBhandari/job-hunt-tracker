@@ -32,10 +32,10 @@ export function AppHeader({ action }: AppHeaderProps) {
   return (
     <header className="bg-background/95 sticky top-0 z-10 border-b backdrop-blur">
       <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between gap-4 px-6">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
-            <Icons.BriefcaseBusiness className="text-primary size-5" />
-            <span className="text-sm font-semibold tracking-tight">Job Hunt Tracker</span>
+        <div className="flex min-w-0 items-center gap-6">
+          <Link href="/" className="flex min-w-0 items-center gap-2">
+            <Icons.BriefcaseBusiness className="text-primary size-5 shrink-0" />
+            <span className="truncate text-sm font-semibold tracking-tight">Job Hunt Tracker</span>
           </Link>
 
           <nav className="hidden items-center gap-1 sm:flex">
@@ -62,7 +62,7 @@ export function AppHeader({ action }: AppHeaderProps) {
           <ThemeToggle />
           <Button variant="outline" size="sm" onClick={handleLogout}>
             <Icons.LogOut data-icon="inline-start" />
-            Sign out
+            <span className="hidden sm:inline">Sign out</span>
           </Button>
         </div>
       </div>
