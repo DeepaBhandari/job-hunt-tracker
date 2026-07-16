@@ -19,6 +19,10 @@ import {
   BarChart3,
   Sun,
   Moon,
+  ClipboardList,
+  KanbanSquare,
+  Users,
+  FileText,
 } from 'lucide-react';
 
 export const Icons = {
@@ -42,6 +46,10 @@ export const Icons = {
   BarChart3,
   Sun,
   Moon,
+  ClipboardList,
+  KanbanSquare,
+  Users,
+  FileText,
 };
 
 export type IconName = keyof typeof Icons;

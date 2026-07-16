@@ -12,6 +12,10 @@ const navItems = [
   { href: '/', label: 'Dashboard', Icon: Icons.LayoutDashboard },
   { href: '/companies', label: 'Companies', Icon: Icons.Building2 },
   { href: '/jobs', label: 'Jobs', Icon: Icons.Briefcase },
+  { href: '/applications', label: 'Applications', Icon: Icons.ClipboardList },
+  { href: '/board', label: 'Board', Icon: Icons.KanbanSquare },
+  { href: '/contacts', label: 'Contacts', Icon: Icons.Users },
+  { href: '/resumes', label: 'Resumes', Icon: Icons.FileText },
   { href: '/analytics', label: 'Analytics', Icon: Icons.BarChart3 },
 ];
 
@@ -43,6 +47,7 @@ export function AppHeader({ action }: AppHeaderProps) {
               <Link
                 key={href}
                 href={href}
+                title={label}
                 className={cn(
                   'inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm transition-colors',
                   pathname === href
@@ -51,7 +56,7 @@ export function AppHeader({ action }: AppHeaderProps) {
                 )}
               >
                 <Icon />
-                {label}
+                <span className="hidden lg:inline">{label}</span>
               </Link>
             ))}
           </nav>
