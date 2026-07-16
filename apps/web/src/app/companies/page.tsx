@@ -30,7 +30,7 @@ export default function CompaniesPage() {
   const [industry, setIndustry] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['companies'],
     queryFn: () => apiFetch<{ companies: Company[] }>('/companies'),
   });
@@ -143,6 +143,10 @@ export default function CompaniesPage() {
 
         {isLoading ? (
           <p className="text-muted-foreground text-sm">Loading companies…</p>
+        ) : isError ? (
+          <Alert variant="destructive">
+            <AlertDescription>Failed to load companies. Please try again.</AlertDescription>
+          </Alert>
         ) : companies.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">

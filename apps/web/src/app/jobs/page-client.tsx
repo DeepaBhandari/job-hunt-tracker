@@ -43,7 +43,7 @@ export default function JobsPage() {
     queryFn: () => apiFetch<{ companies: Company[] }>('/companies'),
   });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['jobs', companyIdFilter],
     queryFn: () =>
       apiFetch<{ jobs: Job[] }>(companyIdFilter ? `/jobs?companyId=${companyIdFilter}` : '/jobs'),
@@ -191,6 +191,10 @@ export default function JobsPage() {
 
         {isLoading ? (
           <p className="text-muted-foreground text-sm">Loading jobs…</p>
+        ) : isError ? (
+          <Alert variant="destructive">
+            <AlertDescription>Failed to load jobs. Please try again.</AlertDescription>
+          </Alert>
         ) : jobs.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
