@@ -23,6 +23,7 @@ import {
   KanbanSquare,
   Users,
   FileText,
+  Search,
 } from 'lucide-react';
 
 export const Icons = {
@@ -50,6 +51,7 @@ export const Icons = {
   KanbanSquare,
   Users,
   FileText,
+  Search,
 };
 
 export type IconName = keyof typeof Icons;

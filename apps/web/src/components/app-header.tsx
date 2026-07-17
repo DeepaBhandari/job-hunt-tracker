@@ -8,7 +8,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { cn } from '@/lib/utils';
 import { logout } from '@/lib/auth';
 
-const navItems = [
+export const navItems = [
   { href: '/', label: 'Dashboard', Icon: Icons.LayoutDashboard },
   { href: '/companies', label: 'Companies', Icon: Icons.Building2 },
   { href: '/jobs', label: 'Jobs', Icon: Icons.Briefcase },
