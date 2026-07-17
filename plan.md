@@ -95,7 +95,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Dark mode
 - [ ] Email notifications for upcoming interviews (Resend)
 - [ ] Real-time alerts with Socket.io
-- [ ] Command palette (cmdk)
+- [x] Command palette (cmdk)
 - [ ] Mobile responsive audit
 - [ ] Unit tests: Vitest + Supertest
 - [ ] E2E tests: Playwright
