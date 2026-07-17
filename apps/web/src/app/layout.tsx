@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans';
 import { cn } from '@/lib/utils';
 import { QueryProvider } from '@/providers/query-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { CommandPalette } from '@/components/command-palette';
 import './globals.css';
 
 const geist = { variable: GeistSans.variable };
@@ -21,7 +22,10 @@ export default function RootLayout({
     <html lang="en" className={cn('font-sans', geist.variable)} suppressHydrationWarning>
       <body className="antialiased">
         <ThemeProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <CommandPalette />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
