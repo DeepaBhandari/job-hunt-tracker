@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Icons } from '@/lib/icons';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -26,6 +27,7 @@ interface AppHeaderProps {
 export function AppHeader({ action }: AppHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   async function handleLogout() {
     await logout();
@@ -35,7 +37,7 @@ export function AppHeader({ action }: AppHeaderProps) {
 
   return (
     <header className="bg-background/95 sticky top-0 z-10 border-b backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between gap-4 px-6">
+      <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-6">
           <Link href="/" className="flex min-w-0 items-center gap-2">
             <Icons.BriefcaseBusiness className="text-primary size-5 shrink-0" />
@@ -69,8 +71,39 @@ export function AppHeader({ action }: AppHeaderProps) {
             <Icons.LogOut data-icon="inline-start" />
             <span className="hidden sm:inline">Sign out</span>
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="sm:hidden"
+            aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileNavOpen}
+            onClick={() => setMobileNavOpen((open) => !open)}
+          >
+            {mobileNavOpen ? <Icons.X /> : <Icons.Menu />}
+          </Button>
         </div>
       </div>
+
+      {mobileNavOpen && (
+        <nav className="border-border flex flex-col gap-1 border-t px-4 py-2 sm:hidden">
+          {navItems.map(({ href, label, Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMobileNavOpen(false)}
+              className={cn(
+                'flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors',
+                pathname === href
+                  ? 'bg-muted text-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+              )}
+            >
+              <Icon />
+              {label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

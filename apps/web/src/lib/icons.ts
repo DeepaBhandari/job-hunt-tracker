@@ -24,6 +24,8 @@ import {
   Users,
   FileText,
   Search,
+  Menu,
+  X,
 } from 'lucide-react';
 
 export const Icons = {
@@ -52,6 +54,8 @@ export const Icons = {
   Users,
   FileText,
   Search,
+  Menu,
+  X,
 };
 
 export type IconName = keyof typeof Icons;
