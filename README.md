@@ -134,6 +134,20 @@ Application statuses include: `SAVED`, `APPLIED`, `SCREENING`, `INTERVIEW`, `OFF
 - Shared types are imported from `@job-hunt/types`.
 - Database code is provided by `@job-hunt/db` and consumed by the API.
 
+## Testing
+
+From `apps/api`:
+
+- `pnpm test` - run the Vitest unit test suite
+
+## Screenshots
+
+_Coming soon — dashboard, kanban board, and analytics views._
+
+## Demo
+
+_A short walkthrough video will be linked here once recorded._
+
 ## Helpful commands
 
 ```bash
