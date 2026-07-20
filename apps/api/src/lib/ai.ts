@@ -46,3 +46,17 @@ export async function summarizeJobPosting(jobPosting: string): Promise<string> {
     `Summarize the following job posting:\n\n${jobPosting}`
   );
 }
+
+export async function analyzeResumeGap(prompt: string): Promise<string> {
+  return chatComplete(
+    'You compare a resume against a job posting and produce a gap analysis: a short list of missing or under-emphasized keywords and skills, followed by concrete suggestions for tailoring the resume to the role.',
+    prompt
+  );
+}
+
+export async function generateInterviewPrep(prompt: string): Promise<string> {
+  return chatComplete(
+    'You generate interview preparation material. Produce exactly 10 likely interview questions for the given role and interview stage, each followed by a short coaching tip on how to answer well.',
+    prompt
+  );
+}

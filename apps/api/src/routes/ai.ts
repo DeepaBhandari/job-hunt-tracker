@@ -1,6 +1,16 @@
 import { Router } from 'express';
-import { generateCoverLetter, summarizeJobPosting } from '../lib/ai.js';
-import { ParseJobUrlSchema, GenerateCoverLetterSchema } from '@job-hunt/types';
+import {
+  generateCoverLetter,
+  summarizeJobPosting,
+  analyzeResumeGap,
+  generateInterviewPrep,
+} from '../lib/ai.js';
+import {
+  ParseJobUrlSchema,
+  GenerateCoverLetterSchema,
+  AnalyzeResumeGapSchema,
+  GenerateInterviewPrepSchema,
+} from '@job-hunt/types';
 import { prisma } from '../lib/prisma.js';
 import { requireAuth, getAuthenticatedRequest } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
@@ -65,6 +75,64 @@ router.post('/parse-job-url', validate(ParseJobUrlSchema), async (req, res, next
 
     const summary = await summarizeJobPosting(text.slice(0, 20000));
     res.json({ summary, url });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/resume-gap', validate(AnalyzeResumeGapSchema), async (req, res, next) => {
+  try {
+    const { jobId, resumeText } = req.body as { jobId: string; resumeText: string };
+    const { userId } = getAuthenticatedRequest(req);
+
+    const job = await prisma.job.findFirst({
+      where: { id: jobId, userId },
+      include: { company: true },
+    });
+
+    if (!job) {
+      throw new AppError(404, 'Job not found');
+    }
+
+    const prompt = [
+      `Job posting for ${job.title} at ${job.company.name}:`,
+      job.description ?? '(no description provided)',
+      '',
+      'Resume:',
+      resumeText,
+    ].join('\n');
+
+    const analysis = await analyzeResumeGap(prompt);
+    res.json({ analysis });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/interview-prep', validate(GenerateInterviewPrepSchema), async (req, res, next) => {
+  try {
+    const { applicationId, stage } = req.body as { applicationId: string; stage: string };
+    const { userId } = getAuthenticatedRequest(req);
+
+    const application = await prisma.application.findFirst({
+      where: { id: applicationId, userId },
+      include: { job: { include: { company: true } } },
+    });
+
+    if (!application) {
+      throw new AppError(404, 'Application not found');
+    }
+
+    const prompt = [
+      `Role: ${application.job.title} at ${application.job.company.name}`,
+      `Interview stage: ${stage}`,
+      application.job.description ? `Job description: ${application.job.description}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
+    const prep = await generateInterviewPrep(prompt);
+    res.json({ prep });
   } catch (error) {
     next(error);
   }
