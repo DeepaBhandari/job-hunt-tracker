@@ -31,6 +31,7 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
   const [interviewerName, setInterviewerName] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [prepByInterviewId, setPrepByInterviewId] = useState<Record<string, string>>({});
 
   const { data: applicationData } = useQuery({
     queryKey: ['application', applicationId],
@@ -73,6 +74,21 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['application', applicationId] });
+    },
+  });
+
+  const prepMutation = useMutation({
+    mutationFn: (interview: Interview) =>
+      apiFetch<{ prep: string }>('/ai/interview-prep', {
+        method: 'POST',
+        body: JSON.stringify({ applicationId, stage: interview.type }),
+      }).then((res) => ({ interviewId: interview.id, prep: res.prep })),
+    onSuccess: ({ interviewId, prep }) => {
+      setPrepByInterviewId((prev) => ({ ...prev, [interviewId]: prep }));
+      setError(null);
+    },
+    onError: (err) => {
+      setError(err instanceof ApiError ? err.message : 'Failed to generate interview prep');
     },
   });
 
@@ -176,44 +192,60 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
         ) : (
           <div className="space-y-3">
             {interviews.map((interview) => (
-              <div
-                key={interview.id}
-                className="flex items-start justify-between gap-4 rounded border bg-gray-50 p-3"
-              >
-                <div className="flex-1">
-                  <div className="mb-1 flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">
-                      {interview.type}
-                    </Badge>
-                    {interview.outcome && (
-                      <Badge variant="secondary" className="text-xs">
-                        {interview.outcome}
+              <div key={interview.id} className="rounded border bg-gray-50 p-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="mb-1 flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {interview.type}
                       </Badge>
+                      {interview.outcome && (
+                        <Badge variant="secondary" className="text-xs">
+                          {interview.outcome}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm font-semibold">
+                      {new Date(interview.scheduledAt).toLocaleString()}
+                    </p>
+                    {interview.interviewerName && (
+                      <p className="text-muted-foreground text-xs">{interview.interviewerName}</p>
+                    )}
+                    {interview.notes && (
+                      <p className="text-muted-foreground mt-1 text-xs">{interview.notes}</p>
                     )}
                   </div>
-                  <p className="text-sm font-semibold">
-                    {new Date(interview.scheduledAt).toLocaleString()}
-                  </p>
-                  {interview.interviewerName && (
-                    <p className="text-muted-foreground text-xs">{interview.interviewerName}</p>
-                  )}
-                  {interview.notes && (
-                    <p className="text-muted-foreground mt-1 text-xs">{interview.notes}</p>
-                  )}
+                  <div className="flex shrink-0 gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => prepMutation.mutate(interview)}
+                      disabled={prepMutation.isPending}
+                    >
+                      {prepMutation.isPending && prepMutation.variables?.id === interview.id
+                        ? 'Generating...'
+                        : 'Generate Prep'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        if (confirm('Delete this interview?')) {
+                          deleteMutation.mutate(interview.id);
+                        }
+                      }}
+                      disabled={deleteMutation.isPending}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    if (confirm('Delete this interview?')) {
-                      deleteMutation.mutate(interview.id);
-                    }
-                  }}
-                  disabled={deleteMutation.isPending}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  Delete
-                </Button>
+                {prepByInterviewId[interview.id] && (
+                  <p className="text-muted-foreground mt-3 whitespace-pre-wrap rounded border bg-white p-3 text-xs">
+                    {prepByInterviewId[interview.id]}
+                  </p>
+                )}
               </div>
             ))}
           </div>
