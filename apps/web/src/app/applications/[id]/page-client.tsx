@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { InterviewForm } from '@/components/interview-form';
+import { ResumeGapAnalysis } from '@/components/resume-gap-analysis';
 import { apiFetch } from '@/lib/api';
 
 interface Company {
@@ -289,6 +290,9 @@ export default function ApplicationDetailPage() {
 
             {/* Interviews */}
             <InterviewForm applicationId={app.id} />
+
+            {/* Resume gap analysis */}
+            <ResumeGapAnalysis jobId={app.job.id} />
           </div>
 
           {/* Sidebar */}
