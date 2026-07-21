@@ -129,10 +129,10 @@ On low-time days: fix a UI bug, add a loading skeleton, improve error messages, 
 
 ## What This Teaches (CV Additions)
 
-- Relational schema design with PostgreSQL
-- REST API design from scratch (Express + Prisma + Zod)
-- Auth from scratch (JWT, refresh tokens, httpOnly cookies, Google OAuth)
-- File uploads (local disk with authenticated serving)
-- AI integration (OpenRouter)
-- Monorepo management (Turborepo)
-- Full production deployment
+- Relational schema design with PostgreSQL and Prisma ORM
+- REST API development with Express + Zod validation
+- Authentication system (JWT, refresh tokens, httpOnly cookies, Google OAuth)
+- File upload handling with local disk storage
+- AI-powered features via OpenRouter API
+- Monorepo architecture with Turborepo + pnpm workspaces
+- Full-stack deployment (Vercel frontend + Railway backend)
