@@ -133,6 +133,6 @@ On low-time days: fix a UI bug, add a loading skeleton, improve error messages, 
 - REST API design from scratch (Express + Prisma + Zod)
 - Auth from scratch (JWT, refresh tokens, httpOnly cookies, Google OAuth)
 - File uploads via S3 presigned URLs
-- AI integration (Claude API)
+- AI integration (OpenRouter)
 - Monorepo management (Turborepo)
 - Full production deployment
