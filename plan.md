@@ -16,7 +16,7 @@ A full-stack multi-user web app to manage job applications. Anyone can sign up a
 | Auth | Better Auth (JWT in httpOnly cookies, Google OAuth) |
 | Validation | Zod (shared between frontend and backend) |
 | AI | OpenRouter |
-| File Storage | Local disk (UPLOAD_DIR, served via authenticated route) |
+| File Storage | Local disk via UPLOAD_DIR (authenticated serving, resume uploads) |
 | Deployment | Vercel (frontend) + Railway (API + PostgreSQL) |
 
 ---
@@ -132,7 +132,7 @@ On low-time days: fix a UI bug, add a loading skeleton, improve error messages, 
 - Relational schema design with PostgreSQL
 - REST API design from scratch (Express + Prisma + Zod)
 - Auth from scratch (JWT, refresh tokens, httpOnly cookies, Google OAuth)
-- File uploads via S3 presigned URLs
+- File uploads (local disk with authenticated serving)
 - AI integration (OpenRouter)
 - Monorepo management (Turborepo)
 - Full production deployment
