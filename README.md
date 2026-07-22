@@ -1,29 +1,78 @@
 # Job Hunt Tracker
 
-A monorepo for a job application tracker built with Next.js, Express, Prisma, and a shared TypeScript workspace. The project includes a web frontend, API backend, database package, and shared type definitions.
+A full-stack multi-user web app to manage job applications. Track companies, jobs, applications, interviews, contacts, and resume versions — with AI-powered cover letter generation and analytics.
 
-## Repository structure
+## Tech Stack
 
-- `apps/web` - Next.js frontend application.
-- `apps/api` - Express API server with authentication, job/application management, resume upload, and AI routes.
-- `packages/db` - Prisma database package and schema for users, companies, jobs, applications, interviews, contacts, resumes, and tags.
-- `packages/types` - Shared TypeScript types and Zod schemas used across the monorepo.
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS |
+| State | TanStack Query, Zustand |
+| Backend | Node.js + Express (separate API service) |
+| Database | PostgreSQL + Prisma ORM |
+| Auth | JWT in httpOnly cookies |
+| Validation | Zod (shared between frontend and backend) |
+| AI | OpenRouter |
+| File Storage | Local disk via UPLOAD_DIR |
+| Testing | Vitest + Supertest |
 
-## Key features
+## Features
 
-- User authentication and session handling
-- CRUD routes for companies, jobs, applications, contacts, interviews, and resume versions
-- Resume upload support and S3 integration
-- AI-related API endpoints
-- Kanban-style application tracking UI
-- Shared Prisma schema and generated client via `packages/db`
+### Authentication & Users
+- Email/password registration and login
+- JWT-based session management with httpOnly cookies
+- Automatic token refresh
+
+### Job Application Pipeline
+- CRUD for companies, jobs, applications, contacts, and interviews
+- Kanban board with drag-and-drop between pipeline stages
+- Application statuses: Saved → Applied → Screening → Interview → Offer / Rejected / Withdrawn
+- Interview scheduling with outcome tracking
+- Contact management per company
+- Resume version upload and attachment to applications
+
+### AI-Powered Tools
+- Cover letter generator (job description + resume → cover letter)
+- Resume gap analyzer (job description → missing keywords/skills)
+- Interview prep generator (job title + stage → 10 questions with coaching)
+- Save job from URL (paste link → AI extracts job details)
+
+### Analytics Dashboard
+- Overview stats: total applications, response rate, avg days to response
+- Applications over time (weekly chart)
+- Stage funnel visualization
+- Source breakdown with bar chart
+- Salary range tracker
+- Weekly digest: recent activity + upcoming interviews
+- Export to CSV
+
+### UI/UX
+- Dark mode
+- Command palette (cmdk)
+- Mobile responsive with collapsible navigation
+- Responsive padding and layouts for all screen sizes
+
+## Repository Structure
+
+```
+job-hunt-tracker/
+  apps/
+    web/          ← Next.js 15 frontend (App Router)
+    api/          ← Express API server
+  packages/
+    db/           ← Prisma schema + migrations + seed
+    types/        ← Shared TypeScript types and Zod schemas
+  turbo.json
+  package.json
+  pnpm-workspace.yaml
+```
 
 ## Prerequisites
 
 - Node.js 18 or newer
 - pnpm 9 or newer
 - PostgreSQL database
-- AWS S3-compatible storage for resume uploads (optional)
+- OpenRouter API key (for AI features)
 
 ## Setup
 
@@ -33,18 +82,25 @@ A monorepo for a job application tracker built with Next.js, Express, Prisma, an
 pnpm install
 ```
 
-2. Create environment variables for the API and database.
-
-Example `.env` values (adapt for your environment):
+2. Create environment variables:
 
 ```env
+# Database
 DATABASE_URL="postgresql://user:password@localhost:5432/jobhunt"
-FRONTEND_URL="http://localhost:3000"
+
+# Auth
 JWT_SECRET="your_jwt_secret"
-AWS_REGION="us-east-1"
-AWS_ACCESS_KEY_ID="your_access_key"
-AWS_SECRET_ACCESS_KEY="your_secret_key"
-S3_BUCKET_NAME="your_bucket_name"
+JWT_REFRESH_SECRET="your_refresh_secret"
+
+# Frontend
+FRONTEND_URL="http://localhost:3000"
+
+# AI (optional, for cover letters, gap analysis, etc.)
+OPENROUTER_API_KEY="your_openrouter_api_key"
+OPENROUTER_MODEL="openai/gpt-4o-mini"
+
+# File storage
+UPLOAD_DIR="./uploads"
 ```
 
 3. Run Prisma migrations and generate the client:
@@ -54,105 +110,101 @@ pnpm turbo run db:migrate
 pnpm turbo run db:generate
 ```
 
-4. Seed the database if needed:
+4. Seed the database (optional):
 
 ```bash
 pnpm --filter @job-hunt/db run db:seed
 ```
 
-## Development
-
-Run the full monorepo in development mode:
+5. Start development servers:
 
 ```bash
 pnpm turbo dev
 ```
 
-This starts both the frontend and backend with Turbo's pipeline.
+The frontend runs on `http://localhost:3000` and the API on `http://localhost:3001`.
 
-## Package commands
+## Commands
 
-### Root commands
+### Root
 
-- `pnpm dev` - start all apps in development
-- `pnpm build` - build all packages
-- `pnpm lint` - run lint across workspace
-- `pnpm type-check` - run type checking across workspace
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start all apps in development |
+| `pnpm build` | Build all packages |
+| `pnpm lint` | Run lint across workspace |
+| `pnpm type-check` | Run type checking across workspace |
 
-### Frontend
+### Frontend (`apps/web`)
 
-From `apps/web`:
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start Next.js dev server |
+| `pnpm build` | Build Next.js app |
+| `pnpm lint` | Run ESLint |
+| `pnpm type-check` | Type-check frontend code |
 
-- `pnpm dev` - start Next.js dev server
-- `pnpm build` - build Next.js app
-- `pnpm start` - run built app
-- `pnpm lint` - run ESLint
+### API (`apps/api`)
 
-### API
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start API server with tsx watch |
+| `pnpm build` | Compile API to dist |
+| `pnpm type-check` | Type-check API code |
+| `pnpm test` | Run Vitest unit tests |
 
-From `apps/api`:
+### Database (`packages/db`)
 
-- `pnpm dev` - start API server with `tsx watch`
-- `pnpm build` - compile API to `dist`
-- `pnpm start` - run built API server
-- `pnpm type-check` - type-check API code
-
-### Database
-
-From `packages/db`:
-
-- `pnpm db:migrate` - apply Prisma migrations
-- `pnpm db:generate` - generate Prisma client
-- `pnpm db:studio` - launch Prisma Studio
-- `pnpm db:seed` - run seed script
-
-## Environment
-
-The API is configured to allow requests from `FRONTEND_URL`, defaulting to `http://localhost:3000`.
-
-The API server listens on port `3001` by default.
-
-## Database schema overview
-
-The Prisma schema defines:
-
-- `User`
-- `Company`
-- `Job`
-- `Application`
-- `Interview`
-- `Contact`
-- `ResumeVersion`
-- `Tag`
-- `ApplicationTag`
-
-Application statuses include: `SAVED`, `APPLIED`, `SCREENING`, `INTERVIEW`, `OFFER`, `REJECTED`, `WITHDRAWN`.
-
-## Notes
-
-- This project uses Turbo for monorepo orchestration and pnpm workspace packages.
-- Shared types are imported from `@job-hunt/types`.
-- Database code is provided by `@job-hunt/db` and consumed by the API.
+| Command | Description |
+|---------|-------------|
+| `pnpm db:migrate` | Apply Prisma migrations |
+| `pnpm db:generate` | Generate Prisma client |
+| `pnpm db:studio` | Launch Prisma Studio |
+| `pnpm db:seed` | Run seed script |
 
 ## Testing
 
-From `apps/api`:
-
-- `pnpm test` - run the Vitest unit test suite
-
-## Screenshots
-
-_Coming soon — dashboard, kanban board, and analytics views._
-
-## Demo
-
-_A short walkthrough video will be linked here once recorded._
-
-## Helpful commands
+The API includes integration tests using Vitest and Supertest:
 
 ```bash
-pnpm install
-pnpm turbo dev
-pnpm turbo run build
-pnpm turbo run type-check
+cd apps/api && pnpm test
 ```
+
+Tests cover:
+- Health endpoint
+- Auth routes (register, login, logout, me)
+- Company CRUD operations
+
+## API Routes
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| POST | `/auth/register` | Register new user |
+| POST | `/auth/login` | Login |
+| POST | `/auth/logout` | Logout |
+| POST | `/auth/refresh` | Refresh access token |
+| GET | `/auth/me` | Get current user |
+| CRUD | `/companies` | Company management |
+| CRUD | `/jobs` | Job postings |
+| CRUD | `/applications` | Applications |
+| CRUD | `/interviews` | Interview scheduling |
+| CRUD | `/contacts` | Contact management |
+| CRUD | `/resume-versions` | Resume versions |
+| POST | `/resume-upload` | Upload resume file |
+| POST | `/ai/*` | AI-powered features |
+| GET | `/stats/*` | Analytics endpoints |
+
+## Database Schema
+
+The Prisma schema defines: `User`, `Company`, `Job`, `Application`, `Interview`, `Contact`, `ResumeVersion`, `Tag`, and `ApplicationTag`.
+
+## Deployment
+
+- **Frontend** → Vercel (auto-deploy on push to main)
+- **API + PostgreSQL** → Railway (auto-deploy on push to main)
+- Environment variables managed via Vercel/Railway dashboards
+
+## License
+
+MIT
