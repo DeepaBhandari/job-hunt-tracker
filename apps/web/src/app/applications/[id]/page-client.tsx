@@ -13,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { InterviewForm } from '@/components/interview-form';
 import { ResumeGapAnalysis } from '@/components/resume-gap-analysis';
 import { apiFetch } from '@/lib/api';
+import { Icons } from '@/lib/icons';
 
 interface Company {
   id: string;
@@ -107,7 +108,7 @@ export default function ApplicationDetailPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
           <p className="text-muted-foreground text-sm">Loading application…</p>
         </main>
       </div>
@@ -119,7 +120,7 @@ export default function ApplicationDetailPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
           <Alert>
             <AlertDescription>Application not found</AlertDescription>
           </Alert>
@@ -134,9 +135,10 @@ export default function ApplicationDetailPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
-          <div className="flex gap-2">
+          <div className="flex gap-1 sm:gap-2">
             <Button size="sm" variant="outline" onClick={() => router.push('/applications')}>
-              Back
+              <Icons.ArrowLeft className="sm:hidden" />
+              <span className="hidden sm:inline">Back</span>
             </Button>
             <Button
               size="sm"
@@ -149,17 +151,18 @@ export default function ApplicationDetailPage() {
               }}
               disabled={deleteMutation.isPending}
             >
-              Delete
+              <Icons.Trash2 className="sm:hidden" />
+              <span className="hidden sm:inline">Delete</span>
             </Button>
           </div>
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{app.job.title}</h1>
-            <p className="text-muted-foreground text-sm">{app.job.company.name}</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">{app.job.title}</h1>
+            <p className="text-muted-foreground truncate text-sm">{app.job.company.name}</p>
             {app.job.location && (
               <p className="text-muted-foreground text-sm">{app.job.location}</p>
             )}

@@ -178,7 +178,7 @@ export default function Home() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {STATS.map(({ label, value, Icon }) => (

@@ -71,7 +71,7 @@ export default function CompaniesPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Companies</h1>
           <p className="text-muted-foreground text-sm">
@@ -171,7 +171,7 @@ export default function CompaniesPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center justify-between gap-2">
-                  <div className="text-muted-foreground flex flex-col gap-1 text-sm">
+                  <div className="text-muted-foreground flex min-w-0 flex-col gap-1 text-sm">
                     {company.website && (
                       <a
                         href={company.website}
@@ -190,6 +190,7 @@ export default function CompaniesPage() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
+                    className="flex-none"
                     onClick={() => deleteMutation.mutate(company.id)}
                     disabled={deleteMutation.isPending}
                   >

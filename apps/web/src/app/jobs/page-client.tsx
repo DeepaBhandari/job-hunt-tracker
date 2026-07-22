@@ -93,7 +93,7 @@ export default function JobsPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Jobs</h1>
           <p className="text-muted-foreground text-sm">
@@ -215,7 +215,7 @@ export default function JobsPage() {
                   <div className="flex flex-col gap-1">
                     <p className="font-semibold">{job.title}</p>
                     <p className="text-muted-foreground text-sm">{job.company.name}</p>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground truncate text-sm">
                       {[job.location, job.type, job.source].filter(Boolean).join(' · ')}
                     </p>
                     {job.url && (

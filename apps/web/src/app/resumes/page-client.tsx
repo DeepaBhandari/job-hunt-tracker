@@ -90,7 +90,7 @@ export default function ResumesPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Resume Versions</h1>
           <p className="text-muted-foreground text-sm">
@@ -193,7 +193,7 @@ export default function ResumesPage() {
                       <h3 className="text-base font-semibold">{resume.label}</h3>
                       <a
                         href={`/api/resume-versions/${resume.id}/file`}
-                        className="text-muted-foreground mt-1 block break-all font-mono text-sm hover:underline"
+                        className="text-muted-foreground mt-1 block break-words font-mono text-sm hover:underline"
                       >
                         {resume.filePath}
                       </a>

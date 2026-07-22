@@ -108,7 +108,7 @@ export default function ContactsPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Contacts</h1>
           <p className="text-muted-foreground text-sm">
@@ -161,47 +161,51 @@ export default function ContactsPage() {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full name"
-                    required
-                    className="mt-1"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full name"
+                      required
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="role">Role (optional)</Label>
+                    <Input
+                      id="role"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      placeholder="e.g., Hiring Manager, Recruiter"
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="role">Role (optional)</Label>
-                  <Input
-                    id="role"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="e.g., Hiring Manager, Recruiter"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email (optional)</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@company.com"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="linkedin">LinkedIn URL (optional)</Label>
-                  <Input
-                    id="linkedin"
-                    value={linkedinUrl}
-                    onChange={(e) => setLinkedinUrl(e.target.value)}
-                    placeholder="https://linkedin.com/in/..."
-                    className="mt-1"
-                  />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="email">Email (optional)</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@company.com"
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="linkedin">LinkedIn URL (optional)</Label>
+                    <Input
+                      id="linkedin"
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      placeholder="https://linkedin.com/in/..."
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="notes">Notes (optional)</Label>

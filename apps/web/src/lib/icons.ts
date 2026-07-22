@@ -26,6 +26,7 @@ import {
   Search,
   Menu,
   X,
+  ArrowLeft,
 } from 'lucide-react';
 
 export const Icons = {
@@ -56,6 +57,7 @@ export const Icons = {
   Search,
   Menu,
   X,
+  ArrowLeft,
 };
 
 export type IconName = keyof typeof Icons;
