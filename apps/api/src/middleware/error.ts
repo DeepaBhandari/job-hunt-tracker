@@ -17,10 +17,11 @@ export function errorMiddleware(
   res: Response,
   _next: NextFunction
 ): void {
-  if (err instanceof ZodError) {
+  if (err instanceof ZodError || (err instanceof Error && err.name === 'ZodError')) {
+    const zodErr = err instanceof ZodError ? err : (err as ZodError);
     res.status(400).json({
       error: 'Validation error',
-      details: err.flatten().fieldErrors,
+      details: zodErr.flatten().fieldErrors,
     });
     return;
   }
