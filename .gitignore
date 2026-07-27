@@ -41,3 +41,6 @@ yarn-error.log*
 .idea
 *.swp
 *.swo
+
+# Personal learning guide
+FULLSTACK_LEARNING_GUIDE.md
