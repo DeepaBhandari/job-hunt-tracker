@@ -26,7 +26,15 @@ interface Application {
   job: Job & { company: Company };
 }
 
-const STATUSES = ['SAVED', 'APPLIED', 'SCREENING', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'] as const;
+const STATUSES = [
+  'SAVED',
+  'APPLIED',
+  'SCREENING',
+  'INTERVIEW',
+  'OFFER',
+  'REJECTED',
+  'WITHDRAWN',
+] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   SAVED: 'Saved',
@@ -87,7 +95,7 @@ export default function KanbanPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 px-4 py-4 sm:px-6 sm:py-6">
+        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 p-4 sm:p-6">
           <p className="text-muted-foreground text-sm">Loading board…</p>
         </main>
       </div>
@@ -98,7 +106,7 @@ export default function KanbanPage() {
     <div className="bg-background flex min-h-screen flex-col">
       <AppHeader />
 
-      <main className="flex-1 overflow-x-auto px-4 py-4 sm:px-6 sm:py-6">
+      <main className="flex-1 overflow-x-auto p-4 sm:p-6">
         <div className="flex min-w-max gap-3 sm:gap-4">
           {columns.map((column) => (
             <div

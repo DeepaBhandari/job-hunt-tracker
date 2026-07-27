@@ -108,7 +108,7 @@ export default function ApplicationDetailPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
           <p className="text-muted-foreground text-sm">Loading application…</p>
         </main>
       </div>
@@ -120,7 +120,7 @@ export default function ApplicationDetailPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
           <Alert>
             <AlertDescription>Application not found</AlertDescription>
           </Alert>
@@ -158,18 +158,18 @@ export default function ApplicationDetailPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">{app.job.title}</h1>
+            <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
+              {app.job.title}
+            </h1>
             <p className="text-muted-foreground truncate text-sm">{app.job.company.name}</p>
             {app.job.location && (
               <p className="text-muted-foreground text-sm">{app.job.location}</p>
             )}
           </div>
-          <Badge className={STATUS_COLORS[app.status] || 'bg-gray-100'}>
-            {app.status}
-          </Badge>
+          <Badge className={STATUS_COLORS[app.status] || 'bg-gray-100'}>{app.status}</Badge>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">

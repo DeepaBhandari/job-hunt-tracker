@@ -221,12 +221,10 @@ export default function AnalyticsPage() {
         }
       />
 
-      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+      <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-          <p className="text-muted-foreground text-sm">
-            Insights across your job search pipeline.
-          </p>
+          <p className="text-muted-foreground text-sm">Insights across your job search pipeline.</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
@@ -242,9 +240,7 @@ export default function AnalyticsPage() {
           />
           <StatTile
             label="Response Rate"
-            value={
-              overviewLoading ? '—' : `${Math.round((overview?.responseRate ?? 0) * 100)}%`
-            }
+            value={overviewLoading ? '—' : `${Math.round((overview?.responseRate ?? 0) * 100)}%`}
             Icon={Icons.Percent}
           />
           <StatTile
@@ -404,7 +400,9 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Salary Range Tracker</CardTitle>
-            <CardDescription>Across jobs with salary data attached to an application</CardDescription>
+            <CardDescription>
+              Across jobs with salary data attached to an application
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {!salary || salary.count === 0 ? (
@@ -430,7 +428,11 @@ export default function AnalyticsPage() {
                   value={currencyFormatter.format(salary.maxSalary ?? 0)}
                   Icon={Icons.DollarSign}
                 />
-                <StatTile label="Jobs Tracked" value={String(salary.count)} Icon={Icons.Briefcase} />
+                <StatTile
+                  label="Jobs Tracked"
+                  value={String(salary.count)}
+                  Icon={Icons.Briefcase}
+                />
               </div>
             )}
           </CardContent>
