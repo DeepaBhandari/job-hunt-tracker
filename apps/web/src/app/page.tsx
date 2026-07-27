@@ -1,21 +1,58 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AppHeader } from '@/components/app-header';
+import { Badge } from '@/components/ui/badge';
 import { Icons } from '@/lib/icons';
+import { apiFetch } from '@/lib/api';
 
-type Status = 'SAVED' | 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
+interface Company {
+  id: string;
+  name: string;
+}
+
+interface Job {
+  id: string;
+  title: string;
+  location: string | null;
+}
 
 interface Application {
   id: string;
-  company: string;
-  title: string;
-  location: string;
-  appliedAt: string;
-  status: Status;
+  status: string;
+  appliedAt: string | null;
+  job: Job & { company: Company };
 }
+
+interface Overview {
+  totalApplications: number;
+  activeApplications: number;
+  offers: number;
+  upcomingInterviews: number;
+}
+
+interface Interview {
+  id: string;
+  scheduledAt: string;
+  type: string;
+  application: {
+    job: {
+      title: string;
+      company: Company;
+    };
+  };
+}
+
+interface Digest {
+  recentActivity: Application[];
+  upcomingInterviews: Interview[];
+}
+
+type Status = 'SAVED' | 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
 
 const STATUS_CONFIG: Record<Status, { label: string; dot: string; border: string }> = {
   SAVED: { label: 'Saved', dot: 'bg-slate-400', border: 'border-t-slate-400' },
@@ -37,137 +74,54 @@ const COLUMNS: Status[] = [
   'WITHDRAWN',
 ];
 
-const APPS: Application[] = [
-  {
-    id: '1',
-    company: 'Stripe',
-    title: 'Senior Frontend Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 24',
-    status: 'SAVED',
-  },
-  {
-    id: '2',
-    company: 'Linear',
-    title: 'Product Engineer',
-    location: 'San Francisco, CA',
-    appliedAt: 'Jun 23',
-    status: 'SAVED',
-  },
-  {
-    id: '3',
-    company: 'Vercel',
-    title: 'DX Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 25',
-    status: 'SAVED',
-  },
-  {
-    id: '4',
-    company: 'Figma',
-    title: 'Software Engineer',
-    location: 'New York, NY',
-    appliedAt: 'Jun 21',
-    status: 'APPLIED',
-  },
-  {
-    id: '5',
-    company: 'Notion',
-    title: 'Full Stack Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 19',
-    status: 'APPLIED',
-  },
-  {
-    id: '6',
-    company: 'Anthropic',
-    title: 'Software Engineer',
-    location: 'San Francisco, CA',
-    appliedAt: 'Jun 22',
-    status: 'APPLIED',
-  },
-  {
-    id: '7',
-    company: 'GitHub',
-    title: 'Senior Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 16',
-    status: 'SCREENING',
-  },
-  {
-    id: '8',
-    company: 'Supabase',
-    title: 'Frontend Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 18',
-    status: 'SCREENING',
-  },
-  {
-    id: '9',
-    company: 'Tailwind Labs',
-    title: 'Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 14',
-    status: 'INTERVIEW',
-  },
-  {
-    id: '10',
-    company: 'PlanetScale',
-    title: 'Software Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 17',
-    status: 'INTERVIEW',
-  },
-  {
-    id: '11',
-    company: 'Railway',
-    title: 'Product Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 11',
-    status: 'OFFER',
-  },
-  {
-    id: '12',
-    company: 'Google',
-    title: 'SWE L4',
-    location: 'Mountain View, CA',
-    appliedAt: 'Jun 6',
-    status: 'REJECTED',
-  },
-  {
-    id: '13',
-    company: 'Meta',
-    title: 'Production Engineer',
-    location: 'Remote',
-    appliedAt: 'Jun 8',
-    status: 'REJECTED',
-  },
-  {
-    id: '14',
-    company: 'Amazon',
-    title: 'SDE II',
-    location: 'Seattle, WA',
-    appliedAt: 'Jun 1',
-    status: 'WITHDRAWN',
-  },
-];
+const INTERVIEW_TYPE_COLORS: Record<string, string> = {
+  PHONE: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  VIDEO: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+  TECHNICAL: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+  ONSITE: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  HR: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
+};
 
-const STATS = [
-  { label: 'Total', value: APPS.length, Icon: Icons.BriefcaseBusiness },
-  {
-    label: 'Active',
-    value: APPS.filter((a) => !['REJECTED', 'WITHDRAWN'].includes(a.status)).length,
-    Icon: Icons.TrendingUp,
-  },
-  {
-    label: 'Interviews',
-    value: APPS.filter((a) => a.status === 'INTERVIEW').length,
-    Icon: Icons.CalendarDays,
-  },
-  { label: 'Offers', value: APPS.filter((a) => a.status === 'OFFER').length, Icon: Icons.Sparkles },
-];
+function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
 
 export default function Home() {
+  const { data: overview, isLoading: overviewLoading } = useQuery({
+    queryKey: ['stats', 'overview'],
+    queryFn: () => apiFetch<Overview>('/stats/overview'),
+  });
+
+  const { data: appsData, isLoading: appsLoading } = useQuery({
+    queryKey: ['applications'],
+    queryFn: () => apiFetch<{ applications: Application[] }>('/applications'),
+  });
+
+  const { data: digest } = useQuery({
+    queryKey: ['stats', 'digest'],
+    queryFn: () => apiFetch<Digest>('/stats/digest'),
+  });
+
+  const applications = appsData?.applications ?? [];
+  const upcomingInterviews = digest?.upcomingInterviews ?? [];
+  const actionNeeded = applications.filter((a) => a.status === 'SAVED');
+
+  const stats = overview
+    ? [
+        { label: 'Total', value: overview.totalApplications, Icon: Icons.BriefcaseBusiness },
+        { label: 'Active', value: overview.activeApplications, Icon: Icons.TrendingUp },
+        { label: 'Interviews', value: overview.upcomingInterviews, Icon: Icons.CalendarDays },
+        { label: 'Offers', value: overview.offers, Icon: Icons.Sparkles },
+      ]
+    : [];
+
+  const isLoading = overviewLoading || appsLoading;
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
@@ -179,77 +133,176 @@ export default function Home() {
       />
 
       <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
-        {/* Stats row */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {STATS.map(({ label, value, Icon }) => (
-            <Card key={label}>
-              <CardContent className="flex items-center justify-between p-4">
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-muted-foreground text-xs font-medium">{label}</span>
-                  <span className="text-2xl font-bold tabular-nums">{value}</span>
-                </div>
-                <Icon className="text-muted-foreground size-5" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {isLoading ? (
+          <p className="text-muted-foreground text-sm">Loading dashboard…</p>
+        ) : (
+          <>
+            {/* Stats row */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {stats.map(({ label, value, Icon }) => (
+                <Card key={label}>
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-muted-foreground text-xs font-medium">{label}</span>
+                      <span className="text-2xl font-bold tabular-nums">{value}</span>
+                    </div>
+                    <Icon className="text-muted-foreground size-5" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-        <Separator />
+            {/* Two-column: Upcoming Interviews + Action Needed */}
+            {(upcomingInterviews.length > 0 || actionNeeded.length > 0) && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {/* Upcoming Interviews */}
+                {upcomingInterviews.length > 0 && (
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <h2 className="text-sm font-semibold">Upcoming Interviews</h2>
+                        <Badge variant="secondary" className="text-xs">
+                          {upcomingInterviews.length}
+                        </Badge>
+                      </div>
+                      <div className="space-y-3">
+                        {upcomingInterviews.map((interview) => (
+                          <div
+                            key={interview.id}
+                            className="flex items-start justify-between gap-3"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium">
+                                {interview.application.job.title}
+                              </p>
+                              <p className="text-muted-foreground truncate text-xs">
+                                {interview.application.job.company.name}
+                              </p>
+                              <p className="text-muted-foreground mt-0.5 text-xs">
+                                {formatDateTime(interview.scheduledAt)}
+                              </p>
+                            </div>
+                            <Badge
+                              className={
+                                INTERVIEW_TYPE_COLORS[interview.type] ??
+                                'bg-gray-100 text-gray-800'
+                              }
+                            >
+                              {interview.type}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
-        {/* Kanban board */}
-        <div className="flex gap-3 overflow-x-auto pb-4">
-          {COLUMNS.map((status) => {
-            const { label, dot, border } = STATUS_CONFIG[status];
-            const cards = APPS.filter((a) => a.status === status);
+                {/* Action Needed */}
+                {actionNeeded.length > 0 && (
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <h2 className="text-sm font-semibold">Action Needed</h2>
+                        <Badge variant="secondary" className="text-xs">
+                          {actionNeeded.length}
+                        </Badge>
+                      </div>
+                      <div className="space-y-3">
+                        {actionNeeded.slice(0, 5).map((app) => (
+                          <Link key={app.id} href={`/applications/${app.id}`}>
+                            <div className="flex items-center justify-between gap-3 rounded-md px-1 py-0.5 transition-colors hover:bg-muted/50">
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-medium">{app.job.title}</p>
+                                <p className="text-muted-foreground truncate text-xs">
+                                  {app.job.company.name}
+                                </p>
+                              </div>
+                              <Icons.ExternalLink className="text-muted-foreground size-3 flex-none" />
+                            </div>
+                          </Link>
+                        ))}
+                        {actionNeeded.length > 5 && (
+                          <p className="text-muted-foreground text-xs">
+                            +{actionNeeded.length - 5} more
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
 
-            return (
-              <div key={status} className="flex w-64 flex-none flex-col gap-2">
-                {/* Column header */}
-                <div className={`bg-muted/40 rounded-lg border border-t-2 px-3 py-2.5 ${border}`}>
-                  <div className="flex items-center gap-2">
-                    <span className={`size-2 rounded-full ${dot}`} />
-                    <span className="text-xs font-semibold">{label}</span>
-                    <span className="text-muted-foreground ml-auto text-xs tabular-nums">
-                      {cards.length}
-                    </span>
-                  </div>
-                </div>
+            <Separator />
 
-                {/* Cards */}
-                <div className="flex flex-col gap-2">
-                  {cards.map((app) => (
-                    <Card key={app.id} className="cursor-pointer transition-shadow hover:shadow-md">
-                      <CardContent className="flex flex-col gap-2 p-3">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-sm font-semibold leading-tight">{app.company}</span>
-                          <span className="text-muted-foreground text-xs leading-snug">
-                            {app.title}
+            {/* Kanban board */}
+            <div>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-semibold">Pipeline</h2>
+                {applications.length > 0 && (
+                  <Link href="/board">
+                    <Button variant="ghost" size="sm" className="h-7 text-xs">
+                      View full board →
+                    </Button>
+                  </Link>
+                )}
+              </div>
+              <div className="flex gap-3 overflow-x-auto pb-4">
+                {COLUMNS.map((status) => {
+                  const { label, dot, border } = STATUS_CONFIG[status];
+                  const cards = applications.filter((a) => a.status === status);
+
+                  return (
+                    <div key={status} className="flex w-56 flex-none flex-col gap-2 sm:w-64">
+                      <div className={`bg-muted/40 rounded-lg border border-t-2 px-3 py-2.5 ${border}`}>
+                        <div className="flex items-center gap-2">
+                          <span className={`size-2 rounded-full ${dot}`} />
+                          <span className="text-xs font-semibold">{label}</span>
+                          <span className="text-muted-foreground ml-auto text-xs tabular-nums">
+                            {cards.length}
                           </span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <div className="text-muted-foreground flex items-center gap-1 text-xs">
-                            <Icons.MapPin className="size-3 flex-none" />
-                            <span className="truncate">{app.location}</span>
-                          </div>
-                          <div className="text-muted-foreground flex items-center gap-1 text-xs">
-                            <Icons.CalendarDays className="size-3 flex-none" />
-                            <span>{app.appliedAt}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                      </div>
 
-                  {cards.length === 0 && (
-                    <div className="text-muted-foreground rounded-lg border border-dashed py-6 text-center text-xs">
-                      No applications
+                      <div className="flex flex-col gap-2">
+                        {cards.slice(0, 3).map((app) => (
+                          <Link key={app.id} href={`/applications/${app.id}`}>
+                            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+                              <CardContent className="flex flex-col gap-1.5 p-3">
+                                <span className="text-sm font-semibold leading-tight">
+                                  {app.job.company.name}
+                                </span>
+                                <span className="text-muted-foreground text-xs leading-snug">
+                                  {app.job.title}
+                                </span>
+                                {app.job.location && (
+                                  <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                                    <Icons.MapPin className="size-3 flex-none" />
+                                    <span className="truncate">{app.job.location}</span>
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+
+                        {cards.length === 0 ? (
+                          <div className="text-muted-foreground rounded-lg border border-dashed py-6 text-center text-xs">
+                            No applications
+                          </div>
+                        ) : cards.length > 3 ? (
+                          <p className="text-muted-foreground text-center text-xs">
+                            +{cards.length - 3} more
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
-                  )}
-                </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
