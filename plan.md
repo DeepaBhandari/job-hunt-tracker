@@ -97,7 +97,7 @@ ApplicationTag (application_id, tag_id)
 - [ ] Real-time alerts with Socket.io
 - [x] Command palette (cmdk)
 - [ ] Mobile responsive audit
-- [ ] Unit tests: Vitest + Supertest
+- [x] Unit tests: Vitest + Supertest
 - [ ] E2E tests: Playwright
 - [ ] README + screenshots + demo video
 
