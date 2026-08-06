@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface Company {
@@ -142,7 +143,20 @@ export default function CompaniesPage() {
         )}
 
         {isLoading ? (
-          <p className="text-muted-foreground text-sm">Loading companies…</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Card key={index}>
+                <CardHeader className="gap-2">
+                  <Skeleton className="h-5 w-1/2" />
+                  <Skeleton className="h-4 w-2/3" />
+                </CardHeader>
+                <CardContent className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-1/4" />
+                  <Skeleton className="size-7 rounded-md" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ) : isError ? (
           <Alert variant="destructive">
             <AlertDescription>Failed to load companies. Please try again.</AlertDescription>

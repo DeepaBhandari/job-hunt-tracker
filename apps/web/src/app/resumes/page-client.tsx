@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface ResumeVersion {
@@ -176,7 +177,17 @@ export default function ResumesPage() {
         )}
 
         {isLoading ? (
-          <p className="text-muted-foreground text-sm">Loading resumes…</p>
+          <div className="grid gap-4">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index}>
+                <CardContent className="flex flex-col gap-2 pt-6">
+                  <Skeleton className="h-5 w-1/3" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-3 w-1/4" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ) : resumeVersions.length === 0 ? (
           <Alert>
             <AlertDescription>

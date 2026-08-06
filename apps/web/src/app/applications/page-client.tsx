@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch, ApiError } from '@/lib/api';
 
 interface Company {
@@ -226,7 +227,19 @@ export default function ApplicationsPage() {
         </div>
 
         {isLoading ? (
-          <p className="text-muted-foreground text-sm">Loading applications…</p>
+          <div className="grid gap-4">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Card key={index}>
+                <CardContent className="flex items-start justify-between gap-4 pt-6">
+                  <div className="flex w-full flex-col gap-2">
+                    <Skeleton className="h-5 w-2/5" />
+                    <Skeleton className="h-4 w-1/4" />
+                  </div>
+                  <Skeleton className="h-5 w-20" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ) : applications.length === 0 ? (
           <Alert>
             <AlertDescription>
