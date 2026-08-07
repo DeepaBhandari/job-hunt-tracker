@@ -64,7 +64,7 @@ export function CommandPalette() {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60" />
-        <Dialog.Popup className="fixed top-24 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-xl border bg-popover shadow-2xl">
+        <Dialog.Popup className="fixed top-24 left-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-xl border bg-popover shadow-2xl">
           <div className="flex items-center gap-2 border-b px-3">
             <Icons.Search className="text-muted-foreground size-4 shrink-0" />
             <input
