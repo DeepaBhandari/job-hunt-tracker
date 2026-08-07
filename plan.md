@@ -96,7 +96,7 @@ ApplicationTag (application_id, tag_id)
 - [ ] Email notifications for upcoming interviews (Resend)
 - [ ] Real-time alerts with Socket.io
 - [x] Command palette (cmdk)
-- [ ] Mobile responsive audit
+- [x] Mobile responsive audit
 - [x] Unit tests: Vitest + Supertest
 - [ ] E2E tests: Playwright
 - [ ] README + screenshots + demo video
