@@ -4,9 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppHeader } from '@/components/app-header';
-import { Button } from '@/components/ui/button';
 import { apiFetch } from '@/lib/api';
-import { Icons } from '@/lib/icons';
 
 interface Company {
   id: string;
