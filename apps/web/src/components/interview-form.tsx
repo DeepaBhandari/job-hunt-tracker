@@ -193,8 +193,8 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
           <div className="space-y-3">
             {interviews.map((interview) => (
               <div key={interview.id} className="rounded border bg-gray-50 p-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="min-w-0 flex-1">
                     <div className="mb-1 flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">
                         {interview.type}
@@ -215,7 +215,7 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
                       <p className="text-muted-foreground mt-1 text-xs">{interview.notes}</p>
                     )}
                   </div>
-                  <div className="flex shrink-0 gap-2">
+                  <div className="flex shrink-0 flex-wrap gap-2">
                     <Button
                       size="sm"
                       variant="outline"

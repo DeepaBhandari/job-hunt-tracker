@@ -255,14 +255,14 @@ export default function ApplicationsPage() {
                 <Card className="cursor-pointer transition-shadow hover:shadow-md">
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
+                      <div className="min-w-0 flex-1">
                         <h3 className="text-base font-semibold">{app.job.title}</h3>
                         <p className="text-muted-foreground text-sm">{app.job.company.name}</p>
                         {app.job.location && (
                           <p className="text-muted-foreground text-sm">{app.job.location}</p>
                         )}
                       </div>
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-none flex-col items-end gap-2">
                         <Badge className={STATUS_COLORS[app.status] || 'bg-gray-100'}>
                           {app.status}
                         </Badge>

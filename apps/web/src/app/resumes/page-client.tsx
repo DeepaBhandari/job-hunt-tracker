@@ -199,8 +199,8 @@ export default function ResumesPage() {
             {resumeVersions.map((resume) => (
               <Card key={resume.id}>
                 <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                    <div className="min-w-0 flex-1">
                       <h3 className="text-base font-semibold">{resume.label}</h3>
                       <a
                         href={`/api/resume-versions/${resume.id}/file`}
@@ -212,7 +212,7 @@ export default function ResumesPage() {
                         Uploaded {new Date(resume.uploadedAt).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         size="sm"
                         variant="outline"
