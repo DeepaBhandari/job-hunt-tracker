@@ -173,7 +173,11 @@ cd apps/api && pnpm test
 Tests cover:
 - Health endpoint
 - Auth routes (register, login, logout, me)
-- Company CRUD operations
+- Company, job, application, interview, and contact CRUD operations
+- Resume version management and upload
+- AI-powered feature routes
+- Analytics stats routes
+- JWT helpers
 
 ## API Routes
 
