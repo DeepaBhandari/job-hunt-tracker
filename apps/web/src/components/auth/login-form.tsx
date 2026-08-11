@@ -12,7 +12,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ApiError } from '@/lib/api';
 import { login } from '@/lib/auth';
 
-export function LoginForm() {
+function safeRedirectPath(next?: string): string {
+  if (next && next.startsWith('/') && !next.startsWith('//')) {
+    return next;
+  }
+  return '/';
+}
+
+export function LoginForm({ next }: { next?: string }) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +33,7 @@ export function LoginForm() {
 
     try {
       await login(email, password);
-      router.push('/');
+      router.push(safeRedirectPath(next));
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {
