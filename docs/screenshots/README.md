@@ -1,6 +1,6 @@
 # Screenshots
 
-Drop screenshots here and reference them from the main README's Screenshots section.
+![alt text](image.png)
 
 Naming convention: `<page>.png` (e.g. `dashboard.png`, `kanban.png`, `analytics.png`).
 
