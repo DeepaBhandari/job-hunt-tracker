@@ -51,7 +51,7 @@ export function ResumeGapAnalysis({ jobId }: ResumeGapAnalysisProps) {
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume text here..."
-            className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
             rows={6}
           />
         </div>

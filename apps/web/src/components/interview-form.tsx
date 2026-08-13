@@ -151,7 +151,7 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
                 id="type"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="PHONE">Phone</option>
                 <option value="VIDEO">Video</option>
@@ -177,7 +177,7 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Preparation notes, topics to discuss, etc."
-                className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
                 rows={3}
               />
             </div>
