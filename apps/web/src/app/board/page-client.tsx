@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AppHeader } from '@/components/app-header';
+import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api';
 
 interface Company {
@@ -93,8 +94,26 @@ export default function KanbanPage() {
     return (
       <div className="bg-background flex min-h-screen flex-col">
         <AppHeader />
-        <main className="mx-auto flex w-full max-w-screen-2xl flex-1 p-4 sm:p-6">
-          <p className="text-muted-foreground text-sm">Loading board…</p>
+        <main className="flex-1 overflow-x-auto p-4 sm:p-6">
+          <div className="flex min-w-max gap-3 sm:gap-4">
+            {STATUSES.map((status) => (
+              <div
+                key={status}
+                aria-hidden
+                className="border-border bg-muted/50 flex w-60 flex-col rounded-lg border sm:w-80"
+              >
+                <div className="border-border flex items-center justify-between border-b p-3 sm:p-4">
+                  <Skeleton className="h-4 w-16" />
+                  <Skeleton className="h-5 w-7 rounded" />
+                </div>
+                <div className="min-h-64 flex-1 space-y-2 p-2 sm:min-h-96 sm:space-y-3 sm:p-4">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
         </main>
       </div>
     );
