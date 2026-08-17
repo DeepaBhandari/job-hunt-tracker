@@ -63,7 +63,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Prisma schema + first migration (User, Company, Job)
 - [x] Express API boilerplate: error middleware, Zod validation, health endpoint
 - [x] Auth: register, login, logout, refresh token (JWT in httpOnly cookie)
-- [ ] Google OAuth
+- [x] Google OAuth
 - [x] Next.js auth pages + protected route middleware
 - [x] Company CRUD (API + frontend)
 - [x] Job CRUD (API + frontend)
