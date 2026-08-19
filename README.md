@@ -217,6 +217,12 @@ The Prisma schema defines: `User`, `Company`, `Job`, `Application`, `Interview`,
 - **API + PostgreSQL** → Railway (auto-deploy on push to main)
 - Environment variables managed via Vercel/Railway dashboards
 
+## Contributing
+
+1. Fork the repo and create a feature branch
+2. Make your changes and ensure `pnpm lint` and `pnpm type-check` pass
+3. Open a PR with a clear description of what you changed and why
+
 ## License
 
 MIT
