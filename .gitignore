@@ -29,6 +29,7 @@ apps/api/uploads
 
 # Misc
 .DS_Store
+*.stackdump
 *.log
 npm-debug.log*
 pnpm-debug.log*
