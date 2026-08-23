@@ -54,9 +54,7 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 
 ## Screenshots
 
-| Dashboard | Kanban board |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Kanban board](docs/screenshots/kanban.png) |
+![App screenshot](docs/screenshots/image.png)
 
 Add screenshots by dropping images into `docs/screenshots/` — see [docs/screenshots/README.md](docs/screenshots/README.md).
 
