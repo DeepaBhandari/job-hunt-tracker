@@ -211,8 +211,8 @@ The Prisma schema defines: `User`, `Company`, `Job`, `Application`, `Interview`,
 
 ## Deployment
 
-- **Frontend** → Vercel (auto-deploy on push to main)
-- **API + PostgreSQL** → Railway (auto-deploy on push to main)
+- **Frontend** → Vercel (auto-deploy on push to master)
+- **API + PostgreSQL** → Railway (auto-deploy on push to master)
 - Environment variables managed via Vercel/Railway dashboards
 
 ## Contributing
