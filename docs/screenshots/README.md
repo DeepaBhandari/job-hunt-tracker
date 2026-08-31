@@ -1,6 +1,6 @@
 # Screenshots
 
-![alt text](image.png)
+![Job Hunt Tracker](image.png)
 
 Naming convention: `<page>.png` (e.g. `dashboard.png`, `kanban.png`, `analytics.png`).
 
