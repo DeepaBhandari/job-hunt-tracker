@@ -20,6 +20,10 @@ build
 !.env.local.example
 !.env.docker.example
 
+# Test coverage
+coverage
+*.lcov
+
 # Prisma
 *.db
 *.db-journal

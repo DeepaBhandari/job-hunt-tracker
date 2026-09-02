@@ -13,3 +13,9 @@ apps/api/uploads
 .env.*.local
 !.env.example
 !.env.docker.example
+plan.md
+dev.log
+skills-lock.json
+docs
+*.md
+!README.md
