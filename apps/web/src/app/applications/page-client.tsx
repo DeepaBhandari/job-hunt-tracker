@@ -206,7 +206,7 @@ export default function ApplicationsPage() {
           </Card>
         )}
 
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2">
           <Button
             variant={selectedStatus === null ? 'default' : 'outline'}
             onClick={() => setSelectedStatus(null)}
