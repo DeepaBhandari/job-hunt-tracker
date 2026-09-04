@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -92,6 +93,8 @@ function formatDateTime(iso: string): string {
 }
 
 export default function Home() {
+  const router = useRouter();
+
   const { data: overview, isLoading: overviewLoading } = useQuery({
     queryKey: ['stats', 'overview'],
     queryFn: () => apiFetch<Overview>('/stats/overview'),
@@ -126,7 +129,7 @@ export default function Home() {
     <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
-          <Button size="sm" disabled>
+          <Button size="sm" onClick={() => router.push('/applications')}>
             Add Application
           </Button>
         }
