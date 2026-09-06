@@ -109,7 +109,7 @@ OPENROUTER_MODEL="openai/gpt-4o-mini"
 UPLOAD_DIR="./uploads"
 ```
 
-3. Run Prisma migrations and generate the client:
+3. Run Prisma migrations and generate the client (from root):
 
 ```bash
 pnpm turbo run db:migrate
