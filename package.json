@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Full-stack multi-user web app to manage job applications, interviews, and AI-powered tools",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
