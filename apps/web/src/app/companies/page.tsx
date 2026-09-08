@@ -205,6 +205,7 @@ export default function CompaniesPage() {
                     variant="ghost"
                     size="icon-sm"
                     className="flex-none"
+                    aria-label="Delete company"
                     onClick={() => deleteMutation.mutate(company.id)}
                     disabled={deleteMutation.isPending}
                   >

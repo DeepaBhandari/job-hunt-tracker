@@ -247,6 +247,7 @@ export default function JobsPage() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
+                    aria-label="Delete job"
                     onClick={() => deleteMutation.mutate(job.id)}
                     disabled={deleteMutation.isPending}
                   >

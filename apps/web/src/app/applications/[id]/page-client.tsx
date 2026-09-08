@@ -144,6 +144,7 @@ export default function ApplicationDetailPage() {
               size="sm"
               variant="outline"
               className="text-red-600 hover:text-red-700"
+              aria-label="Delete application"
               onClick={() => {
                 if (confirm('Delete this application?')) {
                   deleteMutation.mutate();
