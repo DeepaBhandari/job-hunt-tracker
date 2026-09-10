@@ -63,7 +63,7 @@ export function ResumeGapAnalysis({ jobId }: ResumeGapAnalysisProps) {
           {analyzeMutation.isPending ? 'Analyzing...' : 'Analyze'}
         </Button>
         {analyzeMutation.data && (
-          <p className="text-muted-foreground mt-2 whitespace-pre-wrap rounded border bg-gray-50 p-3 text-sm">
+          <p className="text-muted-foreground mt-2 whitespace-pre-wrap rounded border bg-muted p-3 text-sm">
             {analyzeMutation.data.analysis}
           </p>
         )}
