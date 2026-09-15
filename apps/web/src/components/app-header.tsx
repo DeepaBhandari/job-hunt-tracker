@@ -67,7 +67,7 @@ export function AppHeader({ action }: AppHeaderProps) {
         <div className="flex items-center gap-2">
           {action}
           <ThemeToggle />
-          <Button variant="outline" size="sm" onClick={handleLogout}>
+          <Button variant="outline" size="sm" onClick={handleLogout} aria-label="Sign out">
             <Icons.LogOut data-icon="inline-start" />
             <span className="hidden sm:inline">Sign out</span>
           </Button>
