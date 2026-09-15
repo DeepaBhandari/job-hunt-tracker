@@ -136,7 +136,12 @@ export default function ApplicationDetailPage() {
       <AppHeader
         action={
           <div className="flex gap-1 sm:gap-2">
-            <Button size="sm" variant="outline" onClick={() => router.push('/applications')}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => router.push('/applications')}
+              aria-label="Back to applications"
+            >
               <Icons.ArrowLeft className="sm:hidden" />
               <span className="hidden sm:inline">Back</span>
             </Button>
