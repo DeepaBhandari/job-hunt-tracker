@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/lib/icons';
+import { cn } from '@/lib/utils';
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -14,7 +15,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <Button variant="outline" size="icon-sm" disabled aria-hidden />;
+    return <span aria-hidden className={cn(buttonVariants({ variant: 'outline', size: 'icon-sm' }))} />;
   }
 
   const isDark = resolvedTheme === 'dark';
