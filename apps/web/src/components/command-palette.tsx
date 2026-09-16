@@ -13,11 +13,16 @@ export function CommandPalette() {
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const listboxId = 'command-palette-listbox';
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return navItems;
     return navItems.filter((item) => item.label.toLowerCase().includes(q));
   }, [query]);
+
+  const activeItem = results[activeIndex];
+  const activeDescendantId = activeItem ? `command-option-${activeItem.href}` : undefined;
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -74,16 +79,23 @@ export function CommandPalette() {
               onKeyDown={handleInputKeyDown}
               placeholder="Jump to a page..."
               aria-label="Search pages"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls={listboxId}
+              aria-activedescendant={activeDescendantId}
               className="h-11 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
-          <div className="max-h-80 overflow-y-auto p-1.5">
+          <div id={listboxId} role="listbox" className="max-h-80 overflow-y-auto p-1.5">
             {results.length === 0 ? (
               <p className="text-muted-foreground px-3 py-6 text-center text-sm">No matching pages.</p>
             ) : (
               results.map((item, index) => (
                 <button
                   key={item.href}
+                  id={`command-option-${item.href}`}
+                  role="option"
+                  aria-selected={index === activeIndex}
                   type="button"
                   onClick={() => navigateTo(item.href)}
                   onMouseEnter={() => setActiveIndex(index)}
