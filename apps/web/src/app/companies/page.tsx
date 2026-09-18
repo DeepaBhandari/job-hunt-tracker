@@ -191,6 +191,7 @@ export default function CompaniesPage() {
                         href={company.website}
                         target="_blank"
                         rel="noreferrer"
+                        aria-label={`${company.name} website (opens in a new tab)`}
                         className="text-foreground inline-flex items-center gap-1 hover:underline"
                       >
                         Website

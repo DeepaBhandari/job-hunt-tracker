@@ -237,6 +237,7 @@ export default function JobsPage() {
                         href={job.url}
                         target="_blank"
                         rel="noreferrer"
+                        aria-label={`View posting for ${job.title} (opens in a new tab)`}
                         className="inline-flex items-center gap-1 text-sm hover:underline"
                       >
                         View posting

@@ -294,6 +294,7 @@ export default function ContactsPage() {
                             href={contact.linkedinUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label={`${contact.name} on LinkedIn (opens in a new tab)`}
                             className="text-sm text-blue-600 hover:underline"
                           >
                             LinkedIn

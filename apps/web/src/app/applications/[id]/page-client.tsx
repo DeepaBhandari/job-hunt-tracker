@@ -243,6 +243,7 @@ export default function ApplicationDetailPage() {
                       href={app.job.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label="View job posting (opens in a new tab)"
                       className="break-all text-sm text-blue-600 hover:underline"
                     >
                       View job posting →
