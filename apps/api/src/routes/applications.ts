@@ -41,8 +41,6 @@ router.get('/', async (req, res, next) => {
             location: true,
             salaryMin: true,
             salaryMax: true,
-          },
-          include: {
             company: {
               select: { id: true, name: true },
             },
