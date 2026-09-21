@@ -258,7 +258,7 @@ export default function AnalyticsPage() {
             Icon={Icons.Sparkles}
           />
           <StatTile
-            label="Interviews (7d)"
+            label="Interviews (upcoming)"
             value={overviewLoading ? '—' : String(overview?.upcomingInterviews ?? 0)}
             Icon={Icons.CalendarDays}
           />
