@@ -220,7 +220,7 @@ export default function Home() {
                                   {app.job.company.name}
                                 </p>
                               </div>
-                              <Icons.ExternalLink className="text-muted-foreground size-3 flex-none" />
+                              <Icons.ChevronRight className="text-muted-foreground size-3 flex-none" />
                             </div>
                           </Link>
                         ))}
