@@ -132,7 +132,7 @@ export default function KanbanPage() {
             >
               <div className="border-border border-b p-3 sm:p-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xs font-semibold sm:text-sm">{column.status}</h2>
+                  <h2 className="text-xs font-semibold sm:text-sm">{STATUS_LABELS[column.status]}</h2>
                   <span className="text-muted-foreground bg-background rounded px-2 py-1 text-xs font-medium">
                     {column.apps.length}
                   </span>
