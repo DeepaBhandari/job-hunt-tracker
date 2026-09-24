@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { AppHeader } from '@/components/app-header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiFetch } from '@/lib/api';
+import { APPLICATION_STATUSES } from '@/lib/application-status';
 
 interface Company {
   id: string;
@@ -24,16 +25,6 @@ interface Application {
   appliedAt: string | null;
   job: Job & { company: Company };
 }
-
-const STATUSES = [
-  'SAVED',
-  'APPLIED',
-  'SCREENING',
-  'INTERVIEW',
-  'OFFER',
-  'REJECTED',
-  'WITHDRAWN',
-] as const;
 
 const STATUS_LABELS: Record<string, string> = {
   SAVED: 'Saved',
@@ -67,7 +58,7 @@ export default function KanbanPage() {
 
   const applications = data?.applications ?? [];
 
-  const columns = STATUSES.map((status) => ({
+  const columns = APPLICATION_STATUSES.map((status) => ({
     status,
     apps: applications.filter((app) => app.status === status),
   }));
@@ -96,7 +87,7 @@ export default function KanbanPage() {
         <AppHeader />
         <main className="flex-1 overflow-x-auto p-4 sm:p-6">
           <div className="flex min-w-max gap-3 sm:gap-4">
-            {STATUSES.map((status) => (
+            {APPLICATION_STATUSES.map((status) => (
               <div
                 key={status}
                 aria-hidden
@@ -183,7 +174,7 @@ export default function KanbanPage() {
                               className="bg-background text-muted-foreground border-border w-auto cursor-pointer rounded border px-1 py-0.5 text-[10px]"
                               aria-label={`Move ${app.job.title} to another status`}
                             >
-                              {STATUSES.map((s) => (
+                              {APPLICATION_STATUSES.map((s) => (
                                 <option key={s} value={s}>
                                   {STATUS_LABELS[s]}
                                 </option>
