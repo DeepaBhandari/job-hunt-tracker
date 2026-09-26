@@ -1,5 +1,6 @@
 'use client';
 
+import type { ApplicationStatus } from '@job-hunt/types';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Icons } from '@/lib/icons';
 import { apiFetch } from '@/lib/api';
+import { APPLICATION_STATUSES } from '@/lib/application-status';
 
 interface Company {
   id: string;
@@ -53,9 +55,7 @@ interface Digest {
   upcomingInterviews: Interview[];
 }
 
-type Status = 'SAVED' | 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
-
-const STATUS_CONFIG: Record<Status, { label: string; dot: string; border: string }> = {
+const STATUS_CONFIG: Record<ApplicationStatus, { label: string; dot: string; border: string }> = {
   SAVED: { label: 'Saved', dot: 'bg-slate-400', border: 'border-t-slate-400' },
   APPLIED: { label: 'Applied', dot: 'bg-blue-500', border: 'border-t-blue-500' },
   SCREENING: { label: 'Screening', dot: 'bg-amber-500', border: 'border-t-amber-500' },
@@ -64,16 +64,6 @@ const STATUS_CONFIG: Record<Status, { label: string; dot: string; border: string
   REJECTED: { label: 'Rejected', dot: 'bg-red-400', border: 'border-t-red-400' },
   WITHDRAWN: { label: 'Withdrawn', dot: 'bg-slate-300', border: 'border-t-slate-300' },
 };
-
-const COLUMNS: Status[] = [
-  'SAVED',
-  'APPLIED',
-  'SCREENING',
-  'INTERVIEW',
-  'OFFER',
-  'REJECTED',
-  'WITHDRAWN',
-];
 
 const INTERVIEW_TYPE_COLORS: Record<string, string> = {
   PHONE: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
@@ -251,7 +241,7 @@ export default function Home() {
                 )}
               </div>
               <div className="flex gap-3 overflow-x-auto pb-4">
-                {COLUMNS.map((status) => {
+                {APPLICATION_STATUSES.map((status) => {
                   const { label, dot, border } = STATUS_CONFIG[status];
                   const cards = applications.filter((a) => a.status === status);
 
