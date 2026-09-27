@@ -137,8 +137,8 @@ export default function ResumesPage() {
                 className="space-y-4"
               >
                 {error && (
-                  <Alert className="border-red-200 bg-red-50">
-                    <AlertDescription className="text-red-800">{error}</AlertDescription>
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
                 <div>
