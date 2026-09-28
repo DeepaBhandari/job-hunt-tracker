@@ -15,16 +15,40 @@ import {
   generateInterviewPrep,
 } from '../../lib/ai.js';
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const mockCompanies = new Map<string, { id: string; userId: string; name: string }>();
-const mockJobs = new Map<string, {
-  id: string; companyId: string; userId: string; title: string;
-  description: string | null; url: string | null; location: string | null;
-}>();
-const mockApplications = new Map<string, {
-  id: string; jobId: string; userId: string; status: string;
-  resumeVersionId: string | null;
-}>();
+const mockJobs = new Map<
+  string,
+  {
+    id: string;
+    companyId: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    url: string | null;
+    location: string | null;
+  }
+>();
+const mockApplications = new Map<
+  string,
+  {
+    id: string;
+    jobId: string;
+    userId: string;
+    status: string;
+    resumeVersionId: string | null;
+  }
+>();
 const state = { userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -42,19 +66,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     job: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; userId: string } }) => {
@@ -93,7 +119,8 @@ vi.mock('../../lib/prisma.js', () => ({
 
 const mockFetch = vi.fn(async () => ({
   ok: true,
-  text: async () => '<html><script>ignored</script><h1>Frontend Engineer</h1><p>React and TypeScript</p></html>',
+  text: async () =>
+    '<html><script>ignored</script><h1>Frontend Engineer</h1><p>React and TypeScript</p></html>',
 }));
 
 function extractCookie(res: { headers: Record<string, string | string[] | undefined> }): string {
@@ -156,12 +183,8 @@ describe('POST /ai/cover-letter', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.coverLetter).toBe('Your cover letter');
-    expect(generateCoverLetter).toHaveBeenCalledWith(
-      expect.stringContaining('Acme Corp')
-    );
-    expect(generateCoverLetter).toHaveBeenCalledWith(
-      expect.stringContaining('5 years of React')
-    );
+    expect(generateCoverLetter).toHaveBeenCalledWith(expect.stringContaining('Acme Corp'));
+    expect(generateCoverLetter).toHaveBeenCalledWith(expect.stringContaining('5 years of React'));
   });
 
   it('returns 404 for a job the user does not own', async () => {
@@ -239,9 +262,7 @@ describe('POST /ai/resume-gap', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.analysis).toBe('Gap analysis');
-    expect(analyzeResumeGap).toHaveBeenCalledWith(
-      expect.stringContaining('Software Engineer')
-    );
+    expect(analyzeResumeGap).toHaveBeenCalledWith(expect.stringContaining('Software Engineer'));
   });
 
   it('returns 404 for a job the user does not own', async () => {
@@ -267,9 +288,7 @@ describe('POST /ai/interview-prep', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.prep).toBe('Interview prep questions');
-    expect(generateInterviewPrep).toHaveBeenCalledWith(
-      expect.stringContaining('Acme Corp')
-    );
+    expect(generateInterviewPrep).toHaveBeenCalledWith(expect.stringContaining('Acme Corp'));
   });
 
   it('returns 404 for an application the user does not own', async () => {

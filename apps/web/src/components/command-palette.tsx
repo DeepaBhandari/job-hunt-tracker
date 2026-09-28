@@ -69,7 +69,7 @@ export function CommandPalette() {
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60" />
-        <Dialog.Popup className="fixed top-24 left-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-xl border bg-popover shadow-2xl">
+        <Dialog.Popup className="bg-popover fixed left-1/2 top-24 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-xl border shadow-2xl">
           <div className="flex items-center gap-2 border-b px-3">
             <Icons.Search className="text-muted-foreground size-4 shrink-0" />
             <input
@@ -83,12 +83,14 @@ export function CommandPalette() {
               aria-expanded="true"
               aria-controls={listboxId}
               aria-activedescendant={activeDescendantId}
-              className="h-11 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              className="placeholder:text-muted-foreground h-11 w-full bg-transparent text-sm outline-none"
             />
           </div>
           <div id={listboxId} role="listbox" className="max-h-80 overflow-y-auto p-1.5">
             {results.length === 0 ? (
-              <p className="text-muted-foreground px-3 py-6 text-center text-sm">No matching pages.</p>
+              <p className="text-muted-foreground px-3 py-6 text-center text-sm">
+                No matching pages.
+              </p>
             ) : (
               results.map((item, index) => (
                 <button

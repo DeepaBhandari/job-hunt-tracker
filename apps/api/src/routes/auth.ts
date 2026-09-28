@@ -10,12 +10,7 @@ import { signAccessToken, verifyRefreshToken } from '../lib/jwt.js';
 
 const router = Router();
 
-function serializeUser(user: {
-  id: string;
-  email: string;
-  name: string | null;
-  createdAt: Date;
-}) {
+function serializeUser(user: { id: string; email: string; name: string | null; createdAt: Date }) {
   return {
     id: user.id,
     email: user.email,

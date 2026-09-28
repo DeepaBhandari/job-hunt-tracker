@@ -3,24 +3,65 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const mockCompanies = new Map<string, { id: string; userId: string; name: string }>();
-const mockJobs = new Map<string, {
-  id: string; companyId: string; userId: string; title: string;
-  location: string | null; salaryMin: number | null; salaryMax: number | null;
-  source: string | null;
-}>();
-const mockApplications = new Map<string, {
-  id: string; jobId: string; userId: string; status: string;
-  appliedAt: Date | null; resumeVersionId: string | null;
-  coverLetter: string | null; notes: string | null;
-  createdAt: Date; updatedAt: Date;
-}>();
-const mockInterviews = new Map<string, {
-  id: string; applicationId: string; scheduledAt: Date; type: string;
-  interviewerName: string | null; notes: string | null; outcome: string | null;
-}>();
-const state = { userCounter: 0, companyCounter: 0, jobCounter: 0, applicationCounter: 0, interviewCounter: 0 };
+const mockJobs = new Map<
+  string,
+  {
+    id: string;
+    companyId: string;
+    userId: string;
+    title: string;
+    location: string | null;
+    salaryMin: number | null;
+    salaryMax: number | null;
+    source: string | null;
+  }
+>();
+const mockApplications = new Map<
+  string,
+  {
+    id: string;
+    jobId: string;
+    userId: string;
+    status: string;
+    appliedAt: Date | null;
+    resumeVersionId: string | null;
+    coverLetter: string | null;
+    notes: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+>();
+const mockInterviews = new Map<
+  string,
+  {
+    id: string;
+    applicationId: string;
+    scheduledAt: Date;
+    type: string;
+    interviewerName: string | null;
+    notes: string | null;
+    outcome: string | null;
+  }
+>();
+const state = {
+  userCounter: 0,
+  companyCounter: 0,
+  jobCounter: 0,
+  applicationCounter: 0,
+  interviewCounter: 0,
+};
 
 vi.mock('../../lib/prisma.js', () => ({
   prisma: {
@@ -37,51 +78,86 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     application: {
-      count: vi.fn(async ({ where }: { where: { userId: string; status?: any; createdAt?: { gte: Date }; updatedAt?: { gte: Date } } }) => {
-        let results = Array.from(mockApplications.values()).filter((a) => a.userId === where.userId);
-        if (where.status) {
-          const s = where.status;
-          if (s.notIn) results = results.filter((a) => !s.notIn.includes(a.status));
-          else if (s.not) results = results.filter((a) => a.status !== s.not);
-          else if (s.in) results = results.filter((a) => s.in.includes(a.status));
-          else results = results.filter((a) => a.status === s);
+      count: vi.fn(
+        async ({
+          where,
+        }: {
+          where: {
+            userId: string;
+            status?: any;
+            createdAt?: { gte: Date };
+            updatedAt?: { gte: Date };
+          };
+        }) => {
+          let results = Array.from(mockApplications.values()).filter(
+            (a) => a.userId === where.userId
+          );
+          if (where.status) {
+            const s = where.status;
+            if (s.notIn) results = results.filter((a) => !s.notIn.includes(a.status));
+            else if (s.not) results = results.filter((a) => a.status !== s.not);
+            else if (s.in) results = results.filter((a) => s.in.includes(a.status));
+            else results = results.filter((a) => a.status === s);
+          }
+          if (where.createdAt?.gte)
+            results = results.filter((a) => a.createdAt >= where.createdAt.gte);
+          if (where.updatedAt?.gte)
+            results = results.filter((a) => a.updatedAt >= where.updatedAt.gte);
+          return results.length;
         }
-        if (where.createdAt?.gte) results = results.filter((a) => a.createdAt >= where.createdAt.gte);
-        if (where.updatedAt?.gte) results = results.filter((a) => a.updatedAt >= where.updatedAt.gte);
-        return results.length;
-      }),
-      findMany: vi.fn(async ({ where, orderBy }: { where: { userId: string; status?: any; appliedAt?: { not: null }; createdAt?: { gte: Date }; updatedAt?: { gte: Date } }; orderBy?: Record<string, string> }) => {
-        let results = Array.from(mockApplications.values()).filter((a) => a.userId === where.userId);
-        if (where.status) {
-          const s = where.status;
-          if (s.in) results = results.filter((a) => s.in.includes(a.status));
-          else if (s.notIn) results = results.filter((a) => !s.notIn.includes(a.status));
-          else if (s.not) results = results.filter((a) => a.status !== s.not);
-          else results = results.filter((a) => a.status === s);
+      ),
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+        }: {
+          where: {
+            userId: string;
+            status?: any;
+            appliedAt?: { not: null };
+            createdAt?: { gte: Date };
+            updatedAt?: { gte: Date };
+          };
+          orderBy?: Record<string, string>;
+        }) => {
+          let results = Array.from(mockApplications.values()).filter(
+            (a) => a.userId === where.userId
+          );
+          if (where.status) {
+            const s = where.status;
+            if (s.in) results = results.filter((a) => s.in.includes(a.status));
+            else if (s.notIn) results = results.filter((a) => !s.notIn.includes(a.status));
+            else if (s.not) results = results.filter((a) => a.status !== s.not);
+            else results = results.filter((a) => a.status === s);
+          }
+          if (where.appliedAt?.not) results = results.filter((a) => a.appliedAt != null);
+          if (where.createdAt?.gte)
+            results = results.filter((a) => a.createdAt >= where.createdAt.gte);
+          if (where.updatedAt?.gte)
+            results = results.filter((a) => a.updatedAt >= where.updatedAt.gte);
+          if (orderBy?.updatedAt === 'desc') {
+            results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+          }
+          return results.map((a) => withInclude(a));
         }
-        if (where.appliedAt?.not) results = results.filter((a) => a.appliedAt != null);
-        if (where.createdAt?.gte) results = results.filter((a) => a.createdAt >= where.createdAt.gte);
-        if (where.updatedAt?.gte) results = results.filter((a) => a.updatedAt >= where.updatedAt.gte);
-        if (orderBy?.updatedAt === 'desc') {
-          results.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-        }
-        return results.map((a) => withInclude(a));
-      }),
+      ),
       groupBy: vi.fn(async ({ where }: { where: { userId: string } }) => {
         const counts = new Map<string, number>();
         for (const a of mockApplications.values()) {
@@ -95,51 +171,77 @@ vi.mock('../../lib/prisma.js', () => ({
       }),
     },
     interview: {
-      count: vi.fn(async ({ where }: { where: { scheduledAt?: { gte: Date }; application?: { userId: string } } }) => {
-        let count = 0;
-        for (const i of mockInterviews.values()) {
-          const application = mockApplications.get(i.applicationId);
-          if (where.application?.userId && application?.userId !== where.application.userId) continue;
-          if (where.scheduledAt?.gte && i.scheduledAt < where.scheduledAt.gte) continue;
-          count++;
+      count: vi.fn(
+        async ({
+          where,
+        }: {
+          where: { scheduledAt?: { gte: Date }; application?: { userId: string } };
+        }) => {
+          let count = 0;
+          for (const i of mockInterviews.values()) {
+            const application = mockApplications.get(i.applicationId);
+            if (where.application?.userId && application?.userId !== where.application.userId)
+              continue;
+            if (where.scheduledAt?.gte && i.scheduledAt < where.scheduledAt.gte) continue;
+            count++;
+          }
+          return count;
         }
-        return count;
-      }),
-      findMany: vi.fn(async ({ where, orderBy }: { where: { scheduledAt?: { gte: Date; lte: Date }; application?: { userId: string } }; orderBy?: { scheduledAt: 'asc' } }) => {
-        let results = Array.from(mockInterviews.values());
-        if (where.scheduledAt?.gte) results = results.filter((i) => i.scheduledAt >= where.scheduledAt.gte);
-        if (where.scheduledAt?.lte) results = results.filter((i) => i.scheduledAt <= where.scheduledAt.lte);
-        if (where.application?.userId) {
-          results = results.filter((i) => mockApplications.get(i.applicationId)?.userId === where.application?.userId);
+      ),
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+        }: {
+          where: { scheduledAt?: { gte: Date; lte: Date }; application?: { userId: string } };
+          orderBy?: { scheduledAt: 'asc' };
+        }) => {
+          let results = Array.from(mockInterviews.values());
+          if (where.scheduledAt?.gte)
+            results = results.filter((i) => i.scheduledAt >= where.scheduledAt.gte);
+          if (where.scheduledAt?.lte)
+            results = results.filter((i) => i.scheduledAt <= where.scheduledAt.lte);
+          if (where.application?.userId) {
+            results = results.filter(
+              (i) => mockApplications.get(i.applicationId)?.userId === where.application?.userId
+            );
+          }
+          if (orderBy?.scheduledAt === 'asc') {
+            results.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime());
+          }
+          return results.map((i) => ({
+            ...i,
+            application: withInclude(mockApplications.get(i.applicationId)!),
+          }));
         }
-        if (orderBy?.scheduledAt === 'asc') {
-          results.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime());
-        }
-        return results.map((i) => ({
-          ...i,
-          application: withInclude(mockApplications.get(i.applicationId)!),
-        }));
-      }),
+      ),
     },
   },
 }));
 
 function withInclude(application: {
-  id: string; jobId: string; userId: string; status: string;
-  appliedAt: Date | null; resumeVersionId: string | null;
-  coverLetter: string | null; notes: string | null;
-  createdAt: Date; updatedAt: Date;
+  id: string;
+  jobId: string;
+  userId: string;
+  status: string;
+  appliedAt: Date | null;
+  resumeVersionId: string | null;
+  coverLetter: string | null;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }) {
   const job = mockJobs.get(application.jobId);
   const company = job ? mockCompanies.get(job.companyId) : undefined;
   return {
     ...application,
-    job: job && company
-      ? {
-          ...job,
-          company: { id: company.id, name: company.name },
-        }
-      : null,
+    job:
+      job && company
+        ? {
+            ...job,
+            company: { id: company.id, name: company.name },
+          }
+        : null,
   };
 }
 
@@ -178,11 +280,19 @@ async function registerAndGetCookie(): Promise<string> {
   return extractCookie(res);
 }
 
-function seedApplication(overrides: Partial<{
-  userId: string; status: string; appliedAt: Date | null;
-  salaryMin: number | null; salaryMax: number | null; source: string | null;
-  companyName: string; createdAt: Date; updatedAt: Date;
-}>) {
+function seedApplication(
+  overrides: Partial<{
+    userId: string;
+    status: string;
+    appliedAt: Date | null;
+    salaryMin: number | null;
+    salaryMax: number | null;
+    source: string | null;
+    companyName: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }>
+) {
   state.companyCounter++;
   const companyId = `company_${state.companyCounter}`;
   const company = {

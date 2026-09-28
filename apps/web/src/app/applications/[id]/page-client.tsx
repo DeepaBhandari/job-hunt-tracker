@@ -273,7 +273,7 @@ export default function ApplicationDetailPage() {
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                      className="border-input bg-background text-foreground w-full rounded border px-3 py-2 text-sm"
                       rows={5}
                       placeholder="Add notes about this application..."
                     />

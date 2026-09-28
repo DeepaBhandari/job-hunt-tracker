@@ -5,9 +5,7 @@ const publicPaths = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isPublic = publicPaths.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
+  const isPublic = publicPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
   const accessToken = request.cookies.get('access_token')?.value;
   const refreshToken = request.cookies.get('refresh_token')?.value;

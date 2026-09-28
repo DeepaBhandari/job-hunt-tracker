@@ -3,7 +3,17 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string | null; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string | null;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 let userCounter = 0;
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -21,19 +31,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        userCounter++;
-        const user = {
-          id: `user_${userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          userCounter++;
+          const user = {
+            id: `user_${userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
   },
 }));

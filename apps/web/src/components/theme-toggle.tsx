@@ -15,7 +15,9 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <span aria-hidden className={cn(buttonVariants({ variant: 'outline', size: 'icon-sm' }))} />;
+    return (
+      <span aria-hidden className={cn(buttonVariants({ variant: 'outline', size: 'icon-sm' }))} />
+    );
   }
 
   const isDark = resolvedTheme === 'dark';

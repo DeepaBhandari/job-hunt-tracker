@@ -4,26 +4,28 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 
 ## Tech Stack
 
-| Layer | Tech |
-|-------|------|
-| Frontend | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS |
-| State | TanStack Query, Zustand |
-| Backend | Node.js + Express (separate API service) |
-| Database | PostgreSQL + Prisma ORM |
-| Auth | Better Auth (JWT in httpOnly cookies, Google OAuth) |
-| Validation | Zod (shared between frontend and backend) |
-| AI | OpenRouter |
-| File Storage | Local disk via UPLOAD_DIR |
-| Testing | Vitest + Supertest |
+| Layer        | Tech                                                         |
+| ------------ | ------------------------------------------------------------ |
+| Frontend     | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS |
+| State        | TanStack Query, Zustand                                      |
+| Backend      | Node.js + Express (separate API service)                     |
+| Database     | PostgreSQL + Prisma ORM                                      |
+| Auth         | Better Auth (JWT in httpOnly cookies, Google OAuth)          |
+| Validation   | Zod (shared between frontend and backend)                    |
+| AI           | OpenRouter                                                   |
+| File Storage | Local disk via UPLOAD_DIR                                    |
+| Testing      | Vitest + Supertest                                           |
 
 ## Features
 
 ### Authentication & Users
+
 - Email/password registration and login
 - JWT-based session management with httpOnly cookies
 - Automatic token refresh
 
 ### Job Application Pipeline
+
 - CRUD for companies, jobs, applications, contacts, and interviews
 - Kanban board with drag-and-drop between pipeline stages
 - Application statuses: Saved → Applied → Screening → Interview → Offer / Rejected / Withdrawn
@@ -32,12 +34,14 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 - Resume version upload and attachment to applications
 
 ### AI-Powered Tools
+
 - Cover letter generator (job description + resume → cover letter)
 - Resume gap analyzer (job description → missing keywords/skills)
 - Interview prep generator (job title + stage → 10 questions with coaching)
 - Save job from URL (paste link → AI extracts job details)
 
 ### Analytics Dashboard
+
 - Overview stats: total applications, response rate, avg days to response
 - Applications over time (weekly chart)
 - Stage funnel visualization
@@ -47,6 +51,7 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 - Export to CSV
 
 ### UI/UX
+
 - Dark mode
 - Command palette (cmdk)
 - Mobile responsive with collapsible navigation
@@ -134,39 +139,39 @@ The frontend runs on `http://localhost:3000` and the API on `http://localhost:30
 
 ### Root
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start all apps in development |
-| `pnpm build` | Build all packages |
-| `pnpm lint` | Run lint across workspace |
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `pnpm dev`        | Start all apps in development      |
+| `pnpm build`      | Build all packages                 |
+| `pnpm lint`       | Run lint across workspace          |
 | `pnpm type-check` | Run type checking across workspace |
 
 ### Frontend (`apps/web`)
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start Next.js dev server |
-| `pnpm build` | Build Next.js app |
-| `pnpm lint` | Run ESLint |
+| Command           | Description              |
+| ----------------- | ------------------------ |
+| `pnpm dev`        | Start Next.js dev server |
+| `pnpm build`      | Build Next.js app        |
+| `pnpm lint`       | Run ESLint               |
 | `pnpm type-check` | Type-check frontend code |
 
 ### API (`apps/api`)
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start API server with tsx watch |
-| `pnpm build` | Compile API to dist |
-| `pnpm type-check` | Type-check API code |
-| `pnpm test` | Run Vitest unit tests |
+| Command           | Description                     |
+| ----------------- | ------------------------------- |
+| `pnpm dev`        | Start API server with tsx watch |
+| `pnpm build`      | Compile API to dist             |
+| `pnpm type-check` | Type-check API code             |
+| `pnpm test`       | Run Vitest unit tests           |
 
 ### Database (`packages/db`)
 
-| Command | Description |
-|---------|-------------|
-| `pnpm db:migrate` | Apply Prisma migrations |
-| `pnpm db:generate` | Generate Prisma client |
-| `pnpm db:studio` | Launch Prisma Studio |
-| `pnpm db:seed` | Run seed script |
+| Command            | Description             |
+| ------------------ | ----------------------- |
+| `pnpm db:migrate`  | Apply Prisma migrations |
+| `pnpm db:generate` | Generate Prisma client  |
+| `pnpm db:studio`   | Launch Prisma Studio    |
+| `pnpm db:seed`     | Run seed script         |
 
 ## Testing
 
@@ -177,6 +182,7 @@ cd apps/api && pnpm test
 ```
 
 Tests cover:
+
 - Health endpoint
 - Auth routes (register, login, logout, me)
 - Company, job, application, interview, and contact CRUD operations
@@ -187,23 +193,23 @@ Tests cover:
 
 ## API Routes
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| POST | `/auth/register` | Register new user |
-| POST | `/auth/login` | Login |
-| POST | `/auth/logout` | Logout |
-| POST | `/auth/refresh` | Refresh access token |
-| GET | `/auth/me` | Get current user |
-| CRUD | `/companies` | Company management |
-| CRUD | `/jobs` | Job postings |
-| CRUD | `/applications` | Applications |
-| CRUD | `/interviews` | Interview scheduling |
-| CRUD | `/contacts` | Contact management |
-| CRUD | `/resume-versions` | Resume versions |
-| POST | `/resume-upload` | Upload resume file |
-| POST | `/ai/*` | AI-powered features |
-| GET | `/stats/*` | Analytics endpoints |
+| Method | Endpoint           | Description          |
+| ------ | ------------------ | -------------------- |
+| GET    | `/health`          | Health check         |
+| POST   | `/auth/register`   | Register new user    |
+| POST   | `/auth/login`      | Login                |
+| POST   | `/auth/logout`     | Logout               |
+| POST   | `/auth/refresh`    | Refresh access token |
+| GET    | `/auth/me`         | Get current user     |
+| CRUD   | `/companies`       | Company management   |
+| CRUD   | `/jobs`            | Job postings         |
+| CRUD   | `/applications`    | Applications         |
+| CRUD   | `/interviews`      | Interview scheduling |
+| CRUD   | `/contacts`        | Contact management   |
+| CRUD   | `/resume-versions` | Resume versions      |
+| POST   | `/resume-upload`   | Upload resume file   |
+| POST   | `/ai/*`            | AI-powered features  |
+| GET    | `/stats/*`         | Analytics endpoints  |
 
 ## Database Schema
 

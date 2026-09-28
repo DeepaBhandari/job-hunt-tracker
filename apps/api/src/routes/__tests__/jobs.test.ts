@@ -3,14 +3,35 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const mockCompanies = new Map<string, { id: string; userId: string; name: string }>();
-const mockJobs = new Map<string, {
-  id: string; companyId: string; userId: string; title: string;
-  description: string | null; url: string | null; salaryMin: number | null;
-  salaryMax: number | null; location: string | null; type: string | null;
-  source: string | null; createdAt: Date;
-}>();
+const mockJobs = new Map<
+  string,
+  {
+    id: string;
+    companyId: string;
+    userId: string;
+    title: string;
+    description: string | null;
+    url: string | null;
+    salaryMin: number | null;
+    salaryMax: number | null;
+    location: string | null;
+    type: string | null;
+    source: string | null;
+    createdAt: Date;
+  }
+>();
 const state = { jobCounter: 0, userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -28,19 +49,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     company: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; userId: string } }) => {
@@ -51,81 +74,129 @@ vi.mock('../../lib/prisma.js', () => ({
       }),
     },
     job: {
-      findMany: vi.fn(async ({ where, orderBy, include }: { where: { userId: string; companyId?: string }; orderBy?: Record<string, string>; include?: Record<string, unknown> }) => {
-        let results = Array.from(mockJobs.values()).filter((j) => j.userId === where.userId);
-        if (where.companyId) {
-          results = results.filter((j) => j.companyId === where.companyId);
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+          include,
+        }: {
+          where: { userId: string; companyId?: string };
+          orderBy?: Record<string, string>;
+          include?: Record<string, unknown>;
+        }) => {
+          let results = Array.from(mockJobs.values()).filter((j) => j.userId === where.userId);
+          if (where.companyId) {
+            results = results.filter((j) => j.companyId === where.companyId);
+          }
+          if (orderBy?.createdAt === 'desc') {
+            results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          }
+          if (include?.company) {
+            return results.map((j) => ({
+              ...j,
+              company: mockCompanies.get(j.companyId)
+                ? {
+                    id: mockCompanies.get(j.companyId)!.id,
+                    name: mockCompanies.get(j.companyId)!.name,
+                  }
+                : null,
+            }));
+          }
+          return results;
         }
-        if (orderBy?.createdAt === 'desc') {
-          results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      ),
+      findFirst: vi.fn(
+        async ({
+          where,
+          include,
+        }: {
+          where: { id: string; userId: string };
+          include?: Record<string, unknown>;
+        }) => {
+          const job = Array.from(mockJobs.values()).find(
+            (j) => j.id === where.id && j.userId === where.userId
+          );
+          if (!job) return null;
+          if (include?.company) {
+            return {
+              ...job,
+              company: mockCompanies.get(job.companyId)
+                ? {
+                    id: mockCompanies.get(job.companyId)!.id,
+                    name: mockCompanies.get(job.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return job;
         }
-        if (include?.company) {
-          return results.map((j) => ({
-            ...j,
-            company: mockCompanies.get(j.companyId)
-              ? { id: mockCompanies.get(j.companyId)!.id, name: mockCompanies.get(j.companyId)!.name }
-              : null,
-          }));
-        }
-        return results;
-      }),
-      findFirst: vi.fn(async ({ where, include }: { where: { id: string; userId: string }; include?: Record<string, unknown> }) => {
-        const job = Array.from(mockJobs.values()).find(
-          (j) => j.id === where.id && j.userId === where.userId
-        );
-        if (!job) return null;
-        if (include?.company) {
-          return {
-            ...job,
-            company: mockCompanies.get(job.companyId)
-              ? { id: mockCompanies.get(job.companyId)!.id, name: mockCompanies.get(job.companyId)!.name }
-              : null,
+      ),
+      create: vi.fn(
+        async ({
+          data,
+          include,
+        }: {
+          data: Record<string, unknown>;
+          include?: Record<string, unknown>;
+        }) => {
+          state.jobCounter++;
+          const job = {
+            id: `job_${state.jobCounter}`,
+            companyId: data.companyId as string,
+            userId: data.userId as string,
+            title: data.title as string,
+            description: (data.description as string) ?? null,
+            url: (data.url as string) ?? null,
+            salaryMin: (data.salaryMin as number) ?? null,
+            salaryMax: (data.salaryMax as number) ?? null,
+            location: (data.location as string) ?? null,
+            type: (data.type as string) ?? null,
+            source: (data.source as string) ?? null,
+            createdAt: new Date(),
           };
+          mockJobs.set(job.id, job);
+          if (include?.company) {
+            return {
+              ...job,
+              company: mockCompanies.get(job.companyId)
+                ? {
+                    id: mockCompanies.get(job.companyId)!.id,
+                    name: mockCompanies.get(job.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return job;
         }
-        return job;
-      }),
-      create: vi.fn(async ({ data, include }: { data: Record<string, unknown>; include?: Record<string, unknown> }) => {
-        state.jobCounter++;
-        const job = {
-          id: `job_${state.jobCounter}`,
-          companyId: data.companyId as string,
-          userId: data.userId as string,
-          title: data.title as string,
-          description: (data.description as string) ?? null,
-          url: (data.url as string) ?? null,
-          salaryMin: (data.salaryMin as number) ?? null,
-          salaryMax: (data.salaryMax as number) ?? null,
-          location: (data.location as string) ?? null,
-          type: (data.type as string) ?? null,
-          source: (data.source as string) ?? null,
-          createdAt: new Date(),
-        };
-        mockJobs.set(job.id, job);
-        if (include?.company) {
-          return {
-            ...job,
-            company: mockCompanies.get(job.companyId)
-              ? { id: mockCompanies.get(job.companyId)!.id, name: mockCompanies.get(job.companyId)!.name }
-              : null,
-          };
+      ),
+      update: vi.fn(
+        async ({
+          where,
+          data,
+          include,
+        }: {
+          where: { id: string };
+          data: Record<string, unknown>;
+          include?: Record<string, unknown>;
+        }) => {
+          const existing = mockJobs.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockJobs.set(where.id, updated as typeof existing);
+          if (include?.company) {
+            return {
+              ...updated,
+              company: mockCompanies.get(updated.companyId)
+                ? {
+                    id: mockCompanies.get(updated.companyId)!.id,
+                    name: mockCompanies.get(updated.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return updated;
         }
-        return job;
-      }),
-      update: vi.fn(async ({ where, data, include }: { where: { id: string }; data: Record<string, unknown>; include?: Record<string, unknown> }) => {
-        const existing = mockJobs.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockJobs.set(where.id, updated as typeof existing);
-        if (include?.company) {
-          return {
-            ...updated,
-            company: mockCompanies.get(updated.companyId)
-              ? { id: mockCompanies.get(updated.companyId)!.id, name: mockCompanies.get(updated.companyId)!.name }
-              : null,
-          };
-        }
-        return updated;
-      }),
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockJobs.delete(where.id);
       }),
@@ -301,7 +372,7 @@ describe('Job CRUD', () => {
     expect(res.status).toBe(404);
   });
 
-  it('returns 404 when accessing another user\'s job', async () => {
+  it("returns 404 when accessing another user's job", async () => {
     const cookie = await registerAndGetCookie();
 
     const createRes = await request(app)

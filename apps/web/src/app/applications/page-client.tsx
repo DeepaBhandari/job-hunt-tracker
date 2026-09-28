@@ -145,7 +145,7 @@ export default function ApplicationsPage() {
                     id="job"
                     value={jobId}
                     onChange={(e) => setJobId(e.target.value)}
-                    className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
                     required
                   >
                     <option value="">Select a job</option>
@@ -163,7 +163,7 @@ export default function ApplicationsPage() {
                       id="resumeVersion"
                       value={resumeVersionId}
                       onChange={(e) => setResumeVersionId(e.target.value)}
-                      className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                      className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
                     >
                       <option value="">None</option>
                       {resumeData.resumeVersions.map((resume) => (
@@ -180,7 +180,7 @@ export default function ApplicationsPage() {
                     id="status"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
                   >
                     {statuses.map((s) => (
                       <option key={s} value={s}>

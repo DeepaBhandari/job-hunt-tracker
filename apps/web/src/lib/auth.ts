@@ -14,11 +14,7 @@ export async function login(email: string, password: string): Promise<User> {
   return data.user;
 }
 
-export async function register(
-  email: string,
-  password: string,
-  name?: string
-): Promise<User> {
+export async function register(email: string, password: string, name?: string): Promise<User> {
   const data = await apiFetch<{ user: User }>('/auth/register', {
     method: 'POST',
     body: JSON.stringify({ email, password, name }),

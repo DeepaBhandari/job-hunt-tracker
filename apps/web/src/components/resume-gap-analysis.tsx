@@ -51,7 +51,7 @@ export function ResumeGapAnalysis({ jobId }: ResumeGapAnalysisProps) {
             value={resumeText}
             onChange={(e) => setResumeText(e.target.value)}
             placeholder="Paste your resume text here..."
-            className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+            className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
             rows={6}
           />
         </div>
@@ -63,7 +63,7 @@ export function ResumeGapAnalysis({ jobId }: ResumeGapAnalysisProps) {
           {analyzeMutation.isPending ? 'Analyzing...' : 'Analyze'}
         </Button>
         {analyzeMutation.data && (
-          <p className="text-muted-foreground mt-2 whitespace-pre-wrap rounded border bg-muted p-3 text-sm">
+          <p className="text-muted-foreground bg-muted mt-2 whitespace-pre-wrap rounded border p-3 text-sm">
             {analyzeMutation.data.analysis}
           </p>
         )}

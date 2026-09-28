@@ -3,7 +3,18 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockCompanies = new Map<string, { id: string; userId: string; name: string; website: string | null; industry: string | null; size: string | null; notes: string | null }>();
+const mockCompanies = new Map<
+  string,
+  {
+    id: string;
+    userId: string;
+    name: string;
+    website: string | null;
+    industry: string | null;
+    size: string | null;
+    notes: string | null;
+  }
+>();
 const state = { companyCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -11,46 +22,87 @@ vi.mock('../../lib/prisma.js', () => ({
     user: {
       findUnique: vi.fn(async ({ where }: { where: { email?: string; id?: string } }) => {
         if (where.id === 'user_1') {
-          return { id: 'user_1', email: 'test@example.com', passwordHash: 'hash', name: 'Test', googleId: null, createdAt: new Date() };
+          return {
+            id: 'user_1',
+            email: 'test@example.com',
+            passwordHash: 'hash',
+            name: 'Test',
+            googleId: null,
+            createdAt: new Date(),
+          };
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        return { id: 'user_1', email: data.email, passwordHash: data.passwordHash, name: data.name ?? null, googleId: null, createdAt: new Date() };
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          return {
+            id: 'user_1',
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+        }
+      ),
     },
     company: {
       findMany: vi.fn(async ({ where }: { where: { userId: string } }) => {
         const results = Array.from(mockCompanies.values()).filter((c) => c.userId === where.userId);
         return results.map((c) => ({ ...c, _count: { jobs: 0 } }));
       }),
-      findFirst: vi.fn(async ({ where, include }: { where: { id: string; userId: string }; include?: { jobs?: unknown } }) => {
-        const company = Array.from(mockCompanies.values()).find((c) => c.id === where.id && c.userId === where.userId);
-        if (!company) return null;
-        if (include?.jobs) return { ...company, jobs: [] };
-        return company;
-      }),
-      create: vi.fn(async ({ data }: { data: { userId: string; name: string; website?: string; industry?: string; size?: string; notes?: string } }) => {
-        state.companyCounter++;
-        const company = {
-          id: `company_${state.companyCounter}`,
-          userId: data.userId,
-          name: data.name,
-          website: data.website ?? null,
-          industry: data.industry ?? null,
-          size: data.size ?? null,
-          notes: data.notes ?? null,
-        };
-        mockCompanies.set(company.id, company);
-        return { ...company, _count: { jobs: 0 } };
-      }),
-      update: vi.fn(async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
-        const existing = mockCompanies.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockCompanies.set(where.id, updated as typeof existing);
-        return updated;
-      }),
+      findFirst: vi.fn(
+        async ({
+          where,
+          include,
+        }: {
+          where: { id: string; userId: string };
+          include?: { jobs?: unknown };
+        }) => {
+          const company = Array.from(mockCompanies.values()).find(
+            (c) => c.id === where.id && c.userId === where.userId
+          );
+          if (!company) return null;
+          if (include?.jobs) return { ...company, jobs: [] };
+          return company;
+        }
+      ),
+      create: vi.fn(
+        async ({
+          data,
+        }: {
+          data: {
+            userId: string;
+            name: string;
+            website?: string;
+            industry?: string;
+            size?: string;
+            notes?: string;
+          };
+        }) => {
+          state.companyCounter++;
+          const company = {
+            id: `company_${state.companyCounter}`,
+            userId: data.userId,
+            name: data.name,
+            website: data.website ?? null,
+            industry: data.industry ?? null,
+            size: data.size ?? null,
+            notes: data.notes ?? null,
+          };
+          mockCompanies.set(company.id, company);
+          return { ...company, _count: { jobs: 0 } };
+        }
+      ),
+      update: vi.fn(
+        async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
+          const existing = mockCompanies.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockCompanies.set(where.id, updated as typeof existing);
+          return updated;
+        }
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockCompanies.delete(where.id);
       }),

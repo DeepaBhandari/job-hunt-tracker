@@ -177,8 +177,7 @@ export default function Home() {
                             </div>
                             <Badge
                               className={
-                                INTERVIEW_TYPE_COLORS[interview.type] ??
-                                'bg-gray-100 text-gray-800'
+                                INTERVIEW_TYPE_COLORS[interview.type] ?? 'bg-gray-100 text-gray-800'
                               }
                             >
                               {interview.type}
@@ -203,7 +202,7 @@ export default function Home() {
                       <div className="space-y-3">
                         {actionNeeded.slice(0, 5).map((app) => (
                           <Link key={app.id} href={`/applications/${app.id}`}>
-                            <div className="flex items-center justify-between gap-3 rounded-md px-1 py-0.5 transition-colors hover:bg-muted/50">
+                            <div className="hover:bg-muted/50 flex items-center justify-between gap-3 rounded-md px-1 py-0.5 transition-colors">
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium">{app.job.title}</p>
                                 <p className="text-muted-foreground truncate text-xs">
@@ -247,7 +246,9 @@ export default function Home() {
 
                   return (
                     <div key={status} className="flex w-56 flex-none flex-col gap-2 sm:w-64">
-                      <div className={`bg-muted/40 rounded-lg border border-t-2 px-3 py-2.5 ${border}`}>
+                      <div
+                        className={`bg-muted/40 rounded-lg border border-t-2 px-3 py-2.5 ${border}`}
+                      >
                         <div className="flex items-center gap-2">
                           <span className={`size-2 rounded-full ${dot}`} />
                           <span className="text-xs font-semibold">{label}</span>

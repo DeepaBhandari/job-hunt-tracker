@@ -1,23 +1,24 @@
 # Job Hunt Tracker — Project Plan
 
 ## What It Is
+
 A full-stack multi-user web app to manage job applications. Anyone can sign up and track their own job search pipeline — companies, jobs, applications, interviews, contacts, and resume versions — with AI-powered cover letter generation and analytics.
 
 ---
 
 ## Tech Stack
 
-| Layer | Tech |
-|-------|------|
-| Frontend | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS |
-| State | TanStack Query, Zustand |
-| Backend | Node.js + Express (separate API service) |
-| Database | PostgreSQL + Prisma ORM |
-| Auth | Better Auth (JWT in httpOnly cookies, Google OAuth) |
-| Validation | Zod (shared between frontend and backend) |
-| AI | OpenRouter |
+| Layer        | Tech                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| Frontend     | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS      |
+| State        | TanStack Query, Zustand                                           |
+| Backend      | Node.js + Express (separate API service)                          |
+| Database     | PostgreSQL + Prisma ORM                                           |
+| Auth         | Better Auth (JWT in httpOnly cookies, Google OAuth)               |
+| Validation   | Zod (shared between frontend and backend)                         |
+| AI           | OpenRouter                                                        |
 | File Storage | Local disk via UPLOAD_DIR (authenticated serving, resume uploads) |
-| Deployment | Vercel (frontend) + Railway (API + PostgreSQL) |
+| Deployment   | Vercel (frontend) + Railway (API + PostgreSQL)                    |
 
 ---
 
@@ -59,6 +60,7 @@ ApplicationTag (application_id, tag_id)
 ## Feature Phases
 
 ### Phase 1 — Foundation (Week 1–2)
+
 - [x] Monorepo scaffold: Turborepo + pnpm workspaces + shared ESLint/Prettier
 - [x] Prisma schema + first migration (User, Company, Job)
 - [x] Express API boilerplate: error middleware, Zod validation, health endpoint
@@ -69,6 +71,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Job CRUD (API + frontend)
 
 ### Phase 2 — Core Tracking (Week 3–4)
+
 - [x] Application CRUD + status field
 - [x] Kanban board — drag-and-drop between stages (native HTML5 DnD)
 - [x] Application detail page: status timeline, notes
@@ -78,6 +81,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Attach resume version when applying
 
 ### Phase 3 — AI Features (Week 5–6)
+
 - [x] OpenRouter integration in Express (server-side only)
 - [x] Cover letter generator (job description + resume → cover letter)
 - [x] Resume gap analyzer (job description → missing keywords/skills)
@@ -85,6 +89,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Save job from URL (paste link → AI extracts job details)
 
 ### Phase 4 — Analytics Dashboard (Week 7–8)
+
 - [x] Stats API: total apps, response rate, avg days to response, active count
 - [x] Recharts dashboard: applications over time, stage funnel, source breakdown
 - [x] Weekly digest view: this week's activity + upcoming interviews
@@ -92,6 +97,7 @@ ApplicationTag (application_id, tag_id)
 - [x] Export to CSV
 
 ### Phase 5 — Polish & Ongoing Streak
+
 - [x] Dark mode
 - [ ] Email notifications for upcoming interviews (Resend)
 - [ ] Real-time alerts with Socket.io
@@ -106,6 +112,7 @@ ApplicationTag (application_id, tag_id)
 ## Daily Commit Strategy
 
 Break every feature into atomic commits:
+
 ```
 schema: add Interview model
 api: POST /interviews with Zod validation

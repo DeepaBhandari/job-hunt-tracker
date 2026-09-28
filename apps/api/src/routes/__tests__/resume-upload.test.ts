@@ -9,7 +9,17 @@ vi.mock('../../lib/storage.js', () => ({
   saveResumeFile: vi.fn(async () => 'resumes/mock.pdf'),
 }));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const state = { userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -27,19 +37,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
   },
 }));

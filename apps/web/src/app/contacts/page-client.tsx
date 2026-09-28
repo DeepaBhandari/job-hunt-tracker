@@ -151,7 +151,7 @@ export default function ContactsPage() {
                     id="company"
                     value={companyId}
                     onChange={(e) => setCompanyId(e.target.value)}
-                    className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
                     required
                   >
                     <option value="">Select a company</option>
@@ -215,7 +215,7 @@ export default function ContactsPage() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Conversation notes, interests, etc."
-                    className="mt-1 w-full rounded border border-input bg-background px-3 py-2 text-sm text-foreground"
+                    className="border-input bg-background text-foreground mt-1 w-full rounded border px-3 py-2 text-sm"
                     rows={3}
                   />
                 </div>

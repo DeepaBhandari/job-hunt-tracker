@@ -3,12 +3,31 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const mockCompanies = new Map<string, { id: string; userId: string; name: string }>();
-const mockContacts = new Map<string, {
-  id: string; companyId: string; userId: string; name: string;
-  role: string | null; email: string | null; linkedinUrl: string | null; notes: string | null;
-}>();
+const mockContacts = new Map<
+  string,
+  {
+    id: string;
+    companyId: string;
+    userId: string;
+    name: string;
+    role: string | null;
+    email: string | null;
+    linkedinUrl: string | null;
+    notes: string | null;
+  }
+>();
 const state = { contactCounter: 0, userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -26,19 +45,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     company: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; userId: string } }) => {
@@ -49,75 +70,121 @@ vi.mock('../../lib/prisma.js', () => ({
       }),
     },
     contact: {
-      findMany: vi.fn(async ({ where, include }: { where: { userId: string; companyId?: string }; include?: { company?: unknown } }) => {
-        let results = Array.from(mockContacts.values()).filter((c) => c.userId === where.userId);
-        if (where.companyId) {
-          results = results.filter((c) => c.companyId === where.companyId);
+      findMany: vi.fn(
+        async ({
+          where,
+          include,
+        }: {
+          where: { userId: string; companyId?: string };
+          include?: { company?: unknown };
+        }) => {
+          let results = Array.from(mockContacts.values()).filter((c) => c.userId === where.userId);
+          if (where.companyId) {
+            results = results.filter((c) => c.companyId === where.companyId);
+          }
+          results.sort((a, b) => a.name.localeCompare(b.name));
+          if (include?.company) {
+            return results.map((c) => ({
+              ...c,
+              company: mockCompanies.get(c.companyId)
+                ? {
+                    id: mockCompanies.get(c.companyId)!.id,
+                    name: mockCompanies.get(c.companyId)!.name,
+                  }
+                : null,
+            }));
+          }
+          return results;
         }
-        results.sort((a, b) => a.name.localeCompare(b.name));
-        if (include?.company) {
-          return results.map((c) => ({
-            ...c,
-            company: mockCompanies.get(c.companyId)
-              ? { id: mockCompanies.get(c.companyId)!.id, name: mockCompanies.get(c.companyId)!.name }
-              : null,
-          }));
+      ),
+      findFirst: vi.fn(
+        async ({
+          where,
+          include,
+        }: {
+          where: { id: string; userId: string };
+          include?: { company?: unknown };
+        }) => {
+          const contact = Array.from(mockContacts.values()).find(
+            (c) => c.id === where.id && c.userId === where.userId
+          );
+          if (!contact) return null;
+          if (include?.company) {
+            return {
+              ...contact,
+              company: mockCompanies.get(contact.companyId)
+                ? {
+                    id: mockCompanies.get(contact.companyId)!.id,
+                    name: mockCompanies.get(contact.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return contact;
         }
-        return results;
-      }),
-      findFirst: vi.fn(async ({ where, include }: { where: { id: string; userId: string }; include?: { company?: unknown } }) => {
-        const contact = Array.from(mockContacts.values()).find(
-          (c) => c.id === where.id && c.userId === where.userId
-        );
-        if (!contact) return null;
-        if (include?.company) {
-          return {
-            ...contact,
-            company: mockCompanies.get(contact.companyId)
-              ? { id: mockCompanies.get(contact.companyId)!.id, name: mockCompanies.get(contact.companyId)!.name }
-              : null,
+      ),
+      create: vi.fn(
+        async ({
+          data,
+          include,
+        }: {
+          data: Record<string, unknown>;
+          include?: { company?: unknown };
+        }) => {
+          state.contactCounter++;
+          const contact = {
+            id: `contact_${state.contactCounter}`,
+            companyId: data.companyId as string,
+            userId: data.userId as string,
+            name: data.name as string,
+            role: (data.role as string) ?? null,
+            email: (data.email as string) ?? null,
+            linkedinUrl: (data.linkedinUrl as string) ?? null,
+            notes: (data.notes as string) ?? null,
           };
+          mockContacts.set(contact.id, contact);
+          if (include?.company) {
+            return {
+              ...contact,
+              company: mockCompanies.get(contact.companyId)
+                ? {
+                    id: mockCompanies.get(contact.companyId)!.id,
+                    name: mockCompanies.get(contact.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return contact;
         }
-        return contact;
-      }),
-      create: vi.fn(async ({ data, include }: { data: Record<string, unknown>; include?: { company?: unknown } }) => {
-        state.contactCounter++;
-        const contact = {
-          id: `contact_${state.contactCounter}`,
-          companyId: data.companyId as string,
-          userId: data.userId as string,
-          name: data.name as string,
-          role: (data.role as string) ?? null,
-          email: (data.email as string) ?? null,
-          linkedinUrl: (data.linkedinUrl as string) ?? null,
-          notes: (data.notes as string) ?? null,
-        };
-        mockContacts.set(contact.id, contact);
-        if (include?.company) {
-          return {
-            ...contact,
-            company: mockCompanies.get(contact.companyId)
-              ? { id: mockCompanies.get(contact.companyId)!.id, name: mockCompanies.get(contact.companyId)!.name }
-              : null,
-          };
+      ),
+      update: vi.fn(
+        async ({
+          where,
+          data,
+          include,
+        }: {
+          where: { id: string };
+          data: Record<string, unknown>;
+          include?: { company?: unknown };
+        }) => {
+          const existing = mockContacts.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockContacts.set(where.id, updated as typeof existing);
+          if (include?.company) {
+            return {
+              ...updated,
+              company: mockCompanies.get(updated.companyId)
+                ? {
+                    id: mockCompanies.get(updated.companyId)!.id,
+                    name: mockCompanies.get(updated.companyId)!.name,
+                  }
+                : null,
+            };
+          }
+          return updated;
         }
-        return contact;
-      }),
-      update: vi.fn(async ({ where, data, include }: { where: { id: string }; data: Record<string, unknown>; include?: { company?: unknown } }) => {
-        const existing = mockContacts.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockContacts.set(where.id, updated as typeof existing);
-        if (include?.company) {
-          return {
-            ...updated,
-            company: mockCompanies.get(updated.companyId)
-              ? { id: mockCompanies.get(updated.companyId)!.id, name: mockCompanies.get(updated.companyId)!.name }
-              : null,
-          };
-        }
-        return updated;
-      }),
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockContacts.delete(where.id);
       }),

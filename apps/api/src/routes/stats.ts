@@ -37,22 +37,28 @@ router.get('/overview', async (req, res, next) => {
     const { userId } = getAuthenticatedRequest(req);
     const now = new Date();
 
-    const [totalApplications, activeApplications, appliedCount, respondedApplications, offers, upcomingInterviews] =
-      await Promise.all([
-        prisma.application.count({ where: { userId } }),
-        prisma.application.count({
-          where: { userId, status: { notIn: ['REJECTED', 'WITHDRAWN'] } },
-        }),
-        prisma.application.count({ where: { userId, status: { not: 'SAVED' } } }),
-        prisma.application.findMany({
-          where: { userId, status: { in: [...RESPONDED_STATUSES] }, appliedAt: { not: null } },
-          select: { appliedAt: true, updatedAt: true },
-        }),
-        prisma.application.count({ where: { userId, status: 'OFFER' } }),
-        prisma.interview.count({
-          where: { scheduledAt: { gte: now }, application: { userId } },
-        }),
-      ]);
+    const [
+      totalApplications,
+      activeApplications,
+      appliedCount,
+      respondedApplications,
+      offers,
+      upcomingInterviews,
+    ] = await Promise.all([
+      prisma.application.count({ where: { userId } }),
+      prisma.application.count({
+        where: { userId, status: { notIn: ['REJECTED', 'WITHDRAWN'] } },
+      }),
+      prisma.application.count({ where: { userId, status: { not: 'SAVED' } } }),
+      prisma.application.findMany({
+        where: { userId, status: { in: [...RESPONDED_STATUSES] }, appliedAt: { not: null } },
+        select: { appliedAt: true, updatedAt: true },
+      }),
+      prisma.application.count({ where: { userId, status: 'OFFER' } }),
+      prisma.interview.count({
+        where: { scheduledAt: { gte: now }, application: { userId } },
+      }),
+    ]);
 
     const respondedCount = respondedApplications.length;
     const responseRate = appliedCount > 0 ? respondedCount / appliedCount : 0;

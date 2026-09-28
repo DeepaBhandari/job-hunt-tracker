@@ -3,17 +3,44 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
 const mockCompanies = new Map<string, { id: string; userId: string; name: string }>();
-const mockJobs = new Map<string, {
-  id: string; companyId: string; userId: string; title: string;
-  location: string | null; salaryMin: number | null; salaryMax: number | null;
-}>();
-const mockApplications = new Map<string, {
-  id: string; jobId: string; userId: string; status: string;
-  appliedAt: Date | null; resumeVersionId: string | null;
-  coverLetter: string | null; notes: string | null; createdAt: Date;
-}>();
+const mockJobs = new Map<
+  string,
+  {
+    id: string;
+    companyId: string;
+    userId: string;
+    title: string;
+    location: string | null;
+    salaryMin: number | null;
+    salaryMax: number | null;
+  }
+>();
+const mockApplications = new Map<
+  string,
+  {
+    id: string;
+    jobId: string;
+    userId: string;
+    status: string;
+    appliedAt: Date | null;
+    resumeVersionId: string | null;
+    coverLetter: string | null;
+    notes: string | null;
+    createdAt: Date;
+  }
+>();
 const state = { applicationCounter: 0, userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -31,19 +58,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     job: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; userId: string } }) => {
@@ -55,22 +84,26 @@ vi.mock('../../lib/prisma.js', () => ({
     },
     application: {
       findMany: vi.fn(async ({ where }: { where: { userId: string; status?: string } }) => {
-        let results = Array.from(mockApplications.values()).filter((a) => a.userId === where.userId);
+        let results = Array.from(mockApplications.values()).filter(
+          (a) => a.userId === where.userId
+        );
         if (where.status) {
           results = results.filter((a) => a.status === where.status);
         }
         results.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
         return results.map((a) => withInclude(a));
       }),
-      findFirst: vi.fn(async ({ where }: { where: { id?: string; jobId?: string; userId: string } }) => {
-        const application = Array.from(mockApplications.values()).find((a) => {
-          if (where.jobId && a.jobId === where.jobId && a.userId === where.userId) return true;
-          if (where.id && a.id === where.id && a.userId === where.userId) return true;
-          return false;
-        });
-        if (!application) return null;
-        return withInclude(application);
-      }),
+      findFirst: vi.fn(
+        async ({ where }: { where: { id?: string; jobId?: string; userId: string } }) => {
+          const application = Array.from(mockApplications.values()).find((a) => {
+            if (where.jobId && a.jobId === where.jobId && a.userId === where.userId) return true;
+            if (where.id && a.id === where.id && a.userId === where.userId) return true;
+            return false;
+          });
+          if (!application) return null;
+          return withInclude(application);
+        }
+      ),
       create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => {
         state.applicationCounter++;
         const application = {
@@ -87,13 +120,15 @@ vi.mock('../../lib/prisma.js', () => ({
         mockApplications.set(application.id, application);
         return withInclude(application);
       }),
-      update: vi.fn(async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
-        const existing = mockApplications.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockApplications.set(where.id, updated as typeof existing);
-        return withInclude(updated);
-      }),
+      update: vi.fn(
+        async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
+          const existing = mockApplications.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockApplications.set(where.id, updated as typeof existing);
+          return withInclude(updated);
+        }
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockApplications.delete(where.id);
       }),
@@ -102,24 +137,31 @@ vi.mock('../../lib/prisma.js', () => ({
 }));
 
 function withInclude(application: {
-  id: string; jobId: string; userId: string; status: string;
-  appliedAt: Date | null; resumeVersionId: string | null;
-  coverLetter: string | null; notes: string | null; createdAt: Date;
+  id: string;
+  jobId: string;
+  userId: string;
+  status: string;
+  appliedAt: Date | null;
+  resumeVersionId: string | null;
+  coverLetter: string | null;
+  notes: string | null;
+  createdAt: Date;
 }) {
   const job = mockJobs.get(application.jobId);
   const company = job ? mockCompanies.get(job.companyId) : undefined;
   return {
     ...application,
-    job: job && company
-      ? {
-          id: job.id,
-          title: job.title,
-          location: job.location,
-          salaryMin: job.salaryMin,
-          salaryMax: job.salaryMax,
-          company: { id: company.id, name: company.name },
-        }
-      : null,
+    job:
+      job && company
+        ? {
+            id: job.id,
+            title: job.title,
+            location: job.location,
+            salaryMin: job.salaryMin,
+            salaryMax: job.salaryMax,
+            company: { id: company.id, name: company.name },
+          }
+        : null,
     resumeVersion: null,
     interviews: [],
     tags: [],

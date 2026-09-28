@@ -3,16 +3,43 @@ import request from 'supertest';
 
 vi.mock('../../lib/ai.js', () => ({}));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
-const mockApplications = new Map<string, {
-  id: string; jobId: string; userId: string; status: string;
-  appliedAt: Date | null; resumeVersionId: string | null;
-  coverLetter: string | null; notes: string | null; createdAt: Date;
-}>();
-const mockInterviews = new Map<string, {
-  id: string; applicationId: string; scheduledAt: Date; type: string;
-  interviewerName: string | null; notes: string | null; outcome: string | null;
-}>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
+const mockApplications = new Map<
+  string,
+  {
+    id: string;
+    jobId: string;
+    userId: string;
+    status: string;
+    appliedAt: Date | null;
+    resumeVersionId: string | null;
+    coverLetter: string | null;
+    notes: string | null;
+    createdAt: Date;
+  }
+>();
+const mockInterviews = new Map<
+  string,
+  {
+    id: string;
+    applicationId: string;
+    scheduledAt: Date;
+    type: string;
+    interviewerName: string | null;
+    notes: string | null;
+    outcome: string | null;
+  }
+>();
 const state = { interviewCounter: 0, userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -30,19 +57,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     application: {
       findFirst: vi.fn(async ({ where }: { where: { id: string; userId: string } }) => {
@@ -53,15 +82,23 @@ vi.mock('../../lib/prisma.js', () => ({
       }),
     },
     interview: {
-      findMany: vi.fn(async ({ where, orderBy }: { where: { applicationId: string }; orderBy?: Record<string, string> }) => {
-        let results = Array.from(mockInterviews.values()).filter(
-          (i) => i.applicationId === where.applicationId
-        );
-        if (orderBy?.scheduledAt === 'asc') {
-          results.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime());
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+        }: {
+          where: { applicationId: string };
+          orderBy?: Record<string, string>;
+        }) => {
+          let results = Array.from(mockInterviews.values()).filter(
+            (i) => i.applicationId === where.applicationId
+          );
+          if (orderBy?.scheduledAt === 'asc') {
+            results.sort((a, b) => a.scheduledAt.getTime() - b.scheduledAt.getTime());
+          }
+          return results;
         }
-        return results;
-      }),
+      ),
       findUnique: vi.fn(async ({ where }: { where: { id: string } }) => {
         return mockInterviews.get(where.id) ?? null;
       }),
@@ -79,13 +116,15 @@ vi.mock('../../lib/prisma.js', () => ({
         mockInterviews.set(interview.id, interview);
         return interview;
       }),
-      update: vi.fn(async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
-        const existing = mockInterviews.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockInterviews.set(where.id, updated as typeof existing);
-        return updated;
-      }),
+      update: vi.fn(
+        async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
+          const existing = mockInterviews.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockInterviews.set(where.id, updated as typeof existing);
+          return updated;
+        }
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockInterviews.delete(where.id);
       }),
@@ -139,15 +178,12 @@ describe('Interview CRUD', () => {
   it('POST /interviews creates an interview', async () => {
     const cookie = await registerAndGetCookie();
 
-    const res = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({
-        applicationId: 'capplication_1',
-        scheduledAt: new Date().toISOString(),
-        type: 'VIDEO',
-        interviewerName: 'Jane Doe',
-      });
+    const res = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'VIDEO',
+      interviewerName: 'Jane Doe',
+    });
 
     expect(res.status).toBe(201);
     expect(res.body.interview.type).toBe('VIDEO');
@@ -157,14 +193,16 @@ describe('Interview CRUD', () => {
   it('GET /interviews/by-application/:applicationId lists interviews', async () => {
     const cookie = await registerAndGetCookie();
 
-    await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'PHONE' });
-    await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'ONSITE' });
+    await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'PHONE',
+    });
+    await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'ONSITE',
+    });
 
     const res = await request(app)
       .get('/interviews/by-application/capplication_1')
@@ -193,10 +231,11 @@ describe('Interview CRUD', () => {
   it('PATCH /interviews/:id updates an interview', async () => {
     const cookie = await registerAndGetCookie();
 
-    const createRes = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'TECHNICAL' });
+    const createRes = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'TECHNICAL',
+    });
 
     const id = createRes.body.interview.id;
 
@@ -213,10 +252,11 @@ describe('Interview CRUD', () => {
   it('DELETE /interviews/:id removes an interview', async () => {
     const cookie = await registerAndGetCookie();
 
-    const createRes = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'PHONE' });
+    const createRes = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'PHONE',
+    });
 
     const id = createRes.body.interview.id;
 
@@ -237,10 +277,11 @@ describe('Interview CRUD', () => {
   it('returns 400 for invalid type', async () => {
     const cookie = await registerAndGetCookie();
 
-    const res = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'NOT_A_TYPE' });
+    const res = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'NOT_A_TYPE',
+    });
 
     expect(res.status).toBe(400);
   });
@@ -271,10 +312,11 @@ describe('Interview CRUD', () => {
       createdAt: new Date(),
     });
 
-    const res = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_2', scheduledAt: new Date().toISOString(), type: 'PHONE' });
+    const res = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_2',
+      scheduledAt: new Date().toISOString(),
+      type: 'PHONE',
+    });
 
     expect(res.status).toBe(404);
     expect(res.body.error).toMatch(/application not found/i);
@@ -283,10 +325,11 @@ describe('Interview CRUD', () => {
   it("returns 403 when accessing another user's interview", async () => {
     const cookie = await registerAndGetCookie();
 
-    const createRes = await request(app)
-      .post('/interviews')
-      .set('Cookie', cookie)
-      .send({ applicationId: 'capplication_1', scheduledAt: new Date().toISOString(), type: 'PHONE' });
+    const createRes = await request(app).post('/interviews').set('Cookie', cookie).send({
+      applicationId: 'capplication_1',
+      scheduledAt: new Date().toISOString(),
+      type: 'PHONE',
+    });
 
     const id = createRes.body.interview.id;
 

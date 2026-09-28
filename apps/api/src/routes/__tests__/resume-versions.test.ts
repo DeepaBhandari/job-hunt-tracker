@@ -14,13 +14,36 @@ vi.mock('../../lib/storage.js', () => ({
   saveResumeFile: vi.fn(async () => 'resumes/mock.pdf'),
 }));
 
-const mockUsers = new Map<string, { id: string; email: string; passwordHash: string; name: string | null; googleId: string | null; createdAt: Date }>();
-const mockResumeVersions = new Map<string, {
-  id: string; userId: string; label: string; filePath: string; uploadedAt: Date;
-}>();
-const mockApplications = new Map<string, {
-  id: string; jobId: string; userId: string; resumeVersionId: string | null;
-}>();
+const mockUsers = new Map<
+  string,
+  {
+    id: string;
+    email: string;
+    passwordHash: string;
+    name: string | null;
+    googleId: string | null;
+    createdAt: Date;
+  }
+>();
+const mockResumeVersions = new Map<
+  string,
+  {
+    id: string;
+    userId: string;
+    label: string;
+    filePath: string;
+    uploadedAt: Date;
+  }
+>();
+const mockApplications = new Map<
+  string,
+  {
+    id: string;
+    jobId: string;
+    userId: string;
+    resumeVersionId: string | null;
+  }
+>();
 const state = { resumeCounter: 0, userCounter: 0 };
 
 vi.mock('../../lib/prisma.js', () => ({
@@ -38,19 +61,21 @@ vi.mock('../../lib/prisma.js', () => ({
         }
         return null;
       }),
-      create: vi.fn(async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
-        state.userCounter++;
-        const user = {
-          id: `user_${state.userCounter}`,
-          email: data.email,
-          passwordHash: data.passwordHash,
-          name: data.name ?? null,
-          googleId: null,
-          createdAt: new Date(),
-        };
-        mockUsers.set(user.id, user);
-        return user;
-      }),
+      create: vi.fn(
+        async ({ data }: { data: { email: string; passwordHash: string; name?: string } }) => {
+          state.userCounter++;
+          const user = {
+            id: `user_${state.userCounter}`,
+            email: data.email,
+            passwordHash: data.passwordHash,
+            name: data.name ?? null,
+            googleId: null,
+            createdAt: new Date(),
+          };
+          mockUsers.set(user.id, user);
+          return user;
+        }
+      ),
     },
     application: {
       findMany: vi.fn(async ({ where }: { where: { resumeVersionId?: string } }) => {
@@ -63,15 +88,23 @@ vi.mock('../../lib/prisma.js', () => ({
       }),
     },
     resumeVersion: {
-      findMany: vi.fn(async ({ where, orderBy }: { where: { userId: string }; orderBy?: Record<string, string> }) => {
-        let results = Array.from(mockResumeVersions.values()).filter(
-          (r) => r.userId === where.userId
-        );
-        if (orderBy?.uploadedAt === 'desc') {
-          results.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+        }: {
+          where: { userId: string };
+          orderBy?: Record<string, string>;
+        }) => {
+          let results = Array.from(mockResumeVersions.values()).filter(
+            (r) => r.userId === where.userId
+          );
+          if (orderBy?.uploadedAt === 'desc') {
+            results.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+          }
+          return results;
         }
-        return results;
-      }),
+      ),
       create: vi.fn(async ({ data }: { data: Record<string, unknown> }) => {
         state.resumeCounter++;
         const resumeVersion = {
@@ -90,13 +123,15 @@ vi.mock('../../lib/prisma.js', () => ({
         );
         return resumeVersion ?? null;
       }),
-      update: vi.fn(async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
-        const existing = mockResumeVersions.get(where.id);
-        if (!existing) throw new Error('Not found');
-        const updated = { ...existing, ...data };
-        mockResumeVersions.set(where.id, updated as typeof existing);
-        return updated;
-      }),
+      update: vi.fn(
+        async ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
+          const existing = mockResumeVersions.get(where.id);
+          if (!existing) throw new Error('Not found');
+          const updated = { ...existing, ...data };
+          mockResumeVersions.set(where.id, updated as typeof existing);
+          return updated;
+        }
+      ),
       delete: vi.fn(async ({ where }: { where: { id: string } }) => {
         mockResumeVersions.delete(where.id);
       }),
@@ -282,7 +317,7 @@ describe('Resume version CRUD', () => {
     expect(res.status).toBe(404);
   });
 
-  it('returns 404 when accessing another user\'s resume version', async () => {
+  it("returns 404 when accessing another user's resume version", async () => {
     const cookie = await registerAndGetCookie();
 
     const createRes = await request(app)

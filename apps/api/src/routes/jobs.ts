@@ -49,27 +49,18 @@ router.get('/', async (req, res, next) => {
 router.post('/', validate(CreateJobSchema), async (req, res, next) => {
   try {
     const { userId } = getAuthenticatedRequest(req);
-    const {
-      companyId,
-      title,
-      description,
-      url,
-      salaryMin,
-      salaryMax,
-      location,
-      type,
-      source,
-    } = req.body as {
-      companyId: string;
-      title: string;
-      description?: string;
-      url?: string;
-      salaryMin?: number;
-      salaryMax?: number;
-      location?: string;
-      type?: string;
-      source?: string;
-    };
+    const { companyId, title, description, url, salaryMin, salaryMax, location, type, source } =
+      req.body as {
+        companyId: string;
+        title: string;
+        description?: string;
+        url?: string;
+        salaryMin?: number;
+        salaryMax?: number;
+        location?: string;
+        type?: string;
+        source?: string;
+      };
 
     await assertCompanyOwnership(companyId, userId);
 
@@ -124,16 +115,7 @@ router.patch('/:id', validate(UpdateJobSchema), async (req, res, next) => {
       throw new AppError(404, 'Job not found');
     }
 
-    const {
-      title,
-      description,
-      url,
-      salaryMin,
-      salaryMax,
-      location,
-      type,
-      source,
-    } = req.body as {
+    const { title, description, url, salaryMin, salaryMax, location, type, source } = req.body as {
       title?: string;
       description?: string;
       url?: string;
