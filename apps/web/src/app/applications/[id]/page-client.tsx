@@ -271,6 +271,7 @@ export default function ApplicationDetailPage() {
                     className="space-y-4"
                   >
                     <textarea
+                      aria-label="Notes"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       className="border-input bg-background text-foreground w-full rounded border px-3 py-2 text-sm"

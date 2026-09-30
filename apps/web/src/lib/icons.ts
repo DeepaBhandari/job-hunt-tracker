@@ -1,7 +1,6 @@
 import {
   Briefcase,
   BriefcaseBusiness,
-  CheckIcon,
   Building2,
   LayoutDashboard,
   LogOut,
@@ -33,7 +32,6 @@ import {
 export const Icons = {
   BriefcaseBusiness,
   Briefcase,
-  CheckIcon,
   ExternalLink,
   Trash2,
   Building2,
@@ -61,5 +59,3 @@ export const Icons = {
   ArrowLeft,
   ChevronRight,
 };
-
-export type IconName = keyof typeof Icons;
