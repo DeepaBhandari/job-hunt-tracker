@@ -120,7 +120,7 @@ export function InterviewForm({ applicationId }: InterviewFormProps) {
               if (scheduledAt && type) {
                 createMutation.mutate({
                   applicationId,
-                  scheduledAt,
+                  scheduledAt: new Date(scheduledAt).toISOString(),
                   type,
                   interviewerName: interviewerName || undefined,
                   notes: notes || undefined,
