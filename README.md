@@ -10,7 +10,7 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 | State        | TanStack Query, Zustand                                      |
 | Backend      | Node.js + Express (separate API service)                     |
 | Database     | PostgreSQL + Prisma ORM                                      |
-| Auth         | Better Auth (JWT in httpOnly cookies, Google OAuth)          |
+| Auth         | JWT in httpOnly cookies (jsonwebtoken, bcryptjs)             |
 | Validation   | Zod (shared between frontend and backend)                    |
 | AI           | OpenRouter                                                   |
 | File Storage | Local disk via UPLOAD_DIR                                    |
