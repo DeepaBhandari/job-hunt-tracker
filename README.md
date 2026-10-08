@@ -7,7 +7,7 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 | Layer        | Tech                                                         |
 | ------------ | ------------------------------------------------------------ |
 | Frontend     | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS |
-| State        | TanStack Query, Zustand                                      |
+| State        | TanStack Query                                               |
 | Backend      | Node.js + Express (separate API service)                     |
 | Database     | PostgreSQL + Prisma ORM                                      |
 | Auth         | JWT in httpOnly cookies (jsonwebtoken, bcryptjs)             |
