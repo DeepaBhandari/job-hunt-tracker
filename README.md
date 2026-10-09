@@ -53,7 +53,7 @@ A full-stack multi-user web app to manage job applications. Track companies, job
 ### UI/UX
 
 - Dark mode
-- Command palette (cmdk)
+- Command palette (⌘K / Ctrl+K quick navigation)
 - Mobile responsive with collapsible navigation
 - Responsive padding and layouts for all screen sizes
 
