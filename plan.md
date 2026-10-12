@@ -11,10 +11,10 @@ A full-stack multi-user web app to manage job applications. Anyone can sign up a
 | Layer        | Tech                                                              |
 | ------------ | ----------------------------------------------------------------- |
 | Frontend     | Next.js 15 (App Router), TypeScript, shadcn/ui, Tailwind CSS      |
-| State        | TanStack Query, Zustand                                           |
+| State        | TanStack Query                                                    |
 | Backend      | Node.js + Express (separate API service)                          |
 | Database     | PostgreSQL + Prisma ORM                                           |
-| Auth         | Better Auth (JWT in httpOnly cookies, Google OAuth)               |
+| Auth         | JWT in httpOnly cookies (jsonwebtoken, bcryptjs)                  |
 | Validation   | Zod (shared between frontend and backend)                         |
 | AI           | OpenRouter                                                        |
 | File Storage | Local disk via UPLOAD_DIR (authenticated serving, resume uploads) |
