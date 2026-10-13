@@ -229,4 +229,4 @@ The Prisma schema defines: `User`, `Company`, `Job`, `Application`, `Interview`,
 
 ## License
 
-MIT
+MIT License
