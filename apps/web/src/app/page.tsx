@@ -145,7 +145,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Two-column: Upcoming Interviews + Action Needed */}
+            {/* Upcoming Interviews + Action Needed */}
             {(upcomingInterviews.length > 0 || actionNeeded.length > 0) && (
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Upcoming Interviews */}
