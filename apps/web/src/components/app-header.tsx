@@ -50,6 +50,7 @@ export function AppHeader({ action }: AppHeaderProps) {
                 key={href}
                 href={href}
                 title={label}
+                aria-label={label}
                 aria-current={pathname === href ? 'page' : undefined}
                 className={cn(
                   'inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-sm transition-colors',
