@@ -178,7 +178,7 @@ The frontend runs on `http://localhost:3000` and the API on `http://localhost:30
 The API includes integration tests using Vitest and Supertest:
 
 ```bash
-cd apps/api && pnpm test
+pnpm --filter @job-hunt/api test
 ```
 
 Tests cover:
