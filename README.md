@@ -162,7 +162,7 @@ The frontend runs on `http://localhost:3000` and the API on `http://localhost:30
 | `pnpm dev`        | Start API server with tsx watch |
 | `pnpm build`      | Compile API to dist             |
 | `pnpm type-check` | Type-check API code             |
-| `pnpm test`       | Run Vitest unit tests           |
+| `pnpm test`       | Run Vitest integration tests    |
 
 ### Database (`packages/db`)
 
