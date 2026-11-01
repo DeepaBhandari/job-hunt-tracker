@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -232,10 +232,15 @@ export default function Home() {
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">Pipeline</h2>
                 {applications.length > 0 && (
-                  <Link href="/board">
-                    <Button variant="ghost" size="sm" className="h-7 text-xs">
-                      View full board →
-                    </Button>
+                  <Link
+                    href="/board"
+                    className={buttonVariants({
+                      variant: 'ghost',
+                      size: 'sm',
+                      className: 'h-7 text-xs',
+                    })}
+                  >
+                    View full board →
                   </Link>
                 )}
               </div>
