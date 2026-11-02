@@ -3,9 +3,8 @@
 import type { ApplicationStatus } from '@job-hunt/types';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { AppHeader } from '@/components/app-header';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -83,8 +82,6 @@ function formatDateTime(iso: string): string {
 }
 
 export default function Home() {
-  const router = useRouter();
-
   const { data: overview, isLoading: overviewLoading } = useQuery({
     queryKey: ['stats', 'overview'],
     queryFn: () => apiFetch<Overview>('/stats/overview'),
@@ -119,9 +116,9 @@ export default function Home() {
     <div className="bg-background flex min-h-screen flex-col">
       <AppHeader
         action={
-          <Button size="sm" onClick={() => router.push('/applications')}>
+          <Link href="/applications" className={buttonVariants({ size: 'sm' })}>
             Add Application
-          </Button>
+          </Link>
         }
       />
 
