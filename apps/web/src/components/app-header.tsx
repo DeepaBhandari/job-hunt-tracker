@@ -44,7 +44,7 @@ export function AppHeader({ action }: AppHeaderProps) {
             <span className="truncate text-sm font-semibold tracking-tight">Job Hunt Tracker</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 sm:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 sm:flex">
             {navItems.map(({ href, label, Icon }) => (
               <Link
                 key={href}
@@ -79,6 +79,7 @@ export function AppHeader({ action }: AppHeaderProps) {
             className="sm:hidden"
             aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileNavOpen}
+            aria-controls={mobileNavOpen ? 'mobile-nav' : undefined}
             onClick={() => setMobileNavOpen((open) => !open)}
           >
             {mobileNavOpen ? <Icons.X /> : <Icons.Menu />}
@@ -87,7 +88,11 @@ export function AppHeader({ action }: AppHeaderProps) {
       </div>
 
       {mobileNavOpen && (
-        <nav className="border-border flex flex-col gap-1 border-t px-4 py-2 sm:hidden">
+        <nav
+          id="mobile-nav"
+          aria-label="Mobile"
+          className="border-border flex flex-col gap-1 border-t px-4 py-2 sm:hidden"
+        >
           {navItems.map(({ href, label, Icon }) => (
             <Link
               key={href}
