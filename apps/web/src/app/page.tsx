@@ -123,6 +123,7 @@ export default function Home() {
       />
 
       <main className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-6 p-4 sm:p-6">
+        <h1 className="sr-only">Dashboard</h1>
         {isLoading ? (
           <p className="text-muted-foreground text-sm">Loading dashboard…</p>
         ) : (

@@ -115,6 +115,7 @@ export default function KanbanPage() {
       <AppHeader />
 
       <main className="flex-1 overflow-x-auto p-4 sm:p-6">
+        <h1 className="sr-only">Board</h1>
         <div className="flex min-w-max gap-3 sm:gap-4">
           {columns.map((column) => (
             <div
